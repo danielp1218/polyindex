@@ -1,37 +1,53 @@
 const indexData = [
-  { name: 'Politics Index', icon: '🏛️', performance: '+12.5%', amount: '+$18,750.00', status: 'Active' },
-  { name: 'Crypto Index', icon: '₿', performance: '+5.2%', amount: '+$7,800.00', status: 'Active' },
-  { name: 'Sports Index', icon: '⚽', performance: '-1.1%', amount: '-$1,850.00', status: 'Paused' },
-  { name: 'Science Index', icon: '🔬', performance: '+8.9%', amount: '+$13,300.00', status: 'Active' },
+  { name: 'Politics Index', logo: '/indextable/politic.png', account: 'Primary Account', performance: '+12.5%', amount: '+$18,750.00', status: 'Active' },
+  { name: 'Crypto Index', logo: '/indextable/crypto.png', account: 'Crypto Index', performance: '+5.2%', amount: '+$7,800.00', status: 'Active' },
+  { name: 'Sports Index', logo: '/indextable/sports.png', account: 'Primary Account', performance: '-1.1%', amount: '-$1,850.00', status: 'Paused' },
+  { name: 'Science Index', logo: '/indextable/science.png', account: 'Science Index', performance: '+8.9%', amount: '+$13,300.00', status: 'Active' },
+  { name: 'Marketing Index', logo: '/indextable/marketing.png', account: 'Marketing', performance: '+2.4%', amount: '+$3,600.00', status: 'Active' },
+  { name: 'Entertainment Index', logo: '/indextable/entertainment.png', account: 'Primary Account', performance: '+6.7%', amount: '+$10,050.00', status: 'Active' },
 ];
 
 export function IndexTable() {
   return (
-    <div className="bg-gradient-to-b from-[#1e3a8a]/20 to-[#0f172a]/40 backdrop-blur-md border border-white/10 rounded-xl p-6 w-full shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] relative overflow-hidden">
-       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
-      <div className="grid grid-cols-[1fr_1fr_100px] gap-4 pb-4 border-b border-white/10 mb-4 relative z-10">
-        <span className="text-sm font-medium text-gray-400">Bet Groups</span>
-        <span className="text-sm font-medium text-gray-400">Index Performance</span>
-        <span className="text-sm font-medium text-gray-400">Status</span>
+    <div className="bg-[#1a2332]/80 backdrop-blur-sm rounded-xl overflow-hidden w-full border border-white/10">
+      {/* Header */}
+      <div className="grid grid-cols-[1fr_1fr_1fr_120px] border-b border-white/10">
+        <div className="px-5 py-4 border-r border-white/10">
+          <span className="text-sm font-medium text-gray-400">Bet Groups</span>
+        </div>
+        <div className="px-5 py-4 border-r border-white/10">
+          <span className="text-sm font-medium text-gray-400">Account</span>
+        </div>
+        <div className="px-5 py-4 border-r border-white/10">
+          <span className="text-sm font-medium text-gray-400">Index Performance</span>
+        </div>
+        <div className="px-5 py-4">
+          <span className="text-sm font-medium text-gray-400">Status</span>
+        </div>
       </div>
-      <div className="flex flex-col gap-2">
+      {/* Rows */}
+      <div className="flex flex-col">
         {indexData.map((item, index) => (
-          <div key={index} className="grid grid-cols-[1fr_1fr_100px] gap-4 py-2 items-center">
-            <div className="flex items-center gap-3">
-              <span className="text-xl">{item.icon}</span>
+          <div key={index} className="grid grid-cols-[1fr_1fr_1fr_120px]">
+            <div className="px-5 py-4 flex items-center gap-3 border-r border-white/10">
+              <img src={item.logo} alt={item.name} className="w-8 h-8 rounded-lg object-cover" />
               <span className="text-white text-sm">{item.name}</span>
             </div>
-            <div>
-              <span className={`text-sm font-medium ${item.performance.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
+            <div className="px-5 py-4 flex items-center border-r border-white/10">
+              <span className="text-sm text-gray-400">{item.account}</span>
+            </div>
+            <div className="px-5 py-4 flex items-center border-r border-white/10">
+              <span className={`text-sm font-medium ${item.performance.startsWith('+') ? 'text-emerald-500/80' : 'text-red-400/80'}`}>
                 {item.performance} ({item.amount})
               </span>
             </div>
-            <div>
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+            <div className="px-5 py-4 flex items-center justify-center">
+              <span className={`inline-flex items-center justify-center gap-1.5 w-[76px] py-1 rounded-md text-xs font-medium ${
                 item.status === 'Active'
-                  ? 'bg-green-500/15 text-green-500 border border-green-500/30'
-                  : 'bg-gray-500/15 text-gray-400 border border-gray-500/30'
+                  ? 'bg-emerald-500/10 text-emerald-400/90 border border-emerald-500/20'
+                  : 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
               }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${item.status === 'Active' ? 'bg-emerald-400/90' : 'bg-gray-400'}`} />
                 {item.status}
               </span>
             </div>
