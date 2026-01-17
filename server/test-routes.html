@@ -190,26 +190,42 @@
             <div id="healthResponse" class="response empty">No response yet</div>
         </div>
 
-        <!-- Questions -->
+        <!-- Dependencies -->
         <div class="section">
-            <h2>Questions</h2>
+            <h2>Dependencies</h2>
 
             <div class="controls">
-                <textarea id="questionInput" placeholder="Enter your question here..."></textarea>
-                <button onclick="submitQuestion()">POST /api/questions</button>
+                <button onclick="getAllDependencies()">GET /api/dependencies (All)</button>
             </div>
-            <div id="submitQuestionResponse" class="response empty">No response yet</div>
+            <div id="allDependenciesResponse" class="response empty">No response yet</div>
 
             <div class="controls" style="margin-top: 15px;">
-                <button onclick="getAllQuestions()">GET /api/questions (All)</button>
+                <input type="text" id="dependencyId" placeholder="Dependency ID">
+                <button onclick="getDependency()">GET /api/dependencies/:id</button>
             </div>
-            <div id="allQuestionsResponse" class="response empty">No response yet</div>
+            <div id="dependencyResponse" class="response empty">No response yet</div>
+        </div>
+
+        <!-- Related Bets -->
+        <div class="section">
+            <h2>Related Bets</h2>
+
+            <div class="controls">
+                <input type="text" id="relatedBetsMarketId" placeholder="CLOB Market ID (condition_id)" style="flex: 2;">
+                <button onclick="submitRelatedBets()">POST /api/related-bets</button>
+            </div>
+            <div id="submitRelatedBetsResponse" class="response empty">No response yet</div>
 
             <div class="controls" style="margin-top: 15px;">
-                <input type="text" id="questionId" placeholder="Question ID">
-                <button onclick="getQuestion()">GET /api/questions/:id</button>
+                <button onclick="getAllRelatedBets()">GET /api/related-bets (All)</button>
             </div>
-            <div id="questionResponse" class="response empty">No response yet</div>
+            <div id="allRelatedBetsResponse" class="response empty">No response yet</div>
+
+            <div class="controls" style="margin-top: 15px;">
+                <input type="text" id="relatedBetsId" placeholder="Job ID">
+                <button onclick="getRelatedBet()">GET /api/related-bets/:id</button>
+            </div>
+            <div id="relatedBetResponse" class="response empty">No response yet</div>
         </div>
 
         <!-- Polymarket -->
@@ -268,55 +284,81 @@
             }
         }
 
-        async function submitQuestion() {
-            const question = document.getElementById('questionInput').value;
-            if (!question) {
-                alert('Please enter a question');
+        async function getAllDependencies() {
+            try {
+                const response = await fetch(`${getBaseUrl()}/api/dependencies`);
+                const data = await response.json();
+                displayResponse('allDependenciesResponse', data, !response.ok);
+            } catch (error) {
+                displayResponse('allDependenciesResponse', { error: error.message }, true);
+            }
+        }
+
+        async function getDependency() {
+            const id = document.getElementById('dependencyId').value;
+            if (!id) {
+                alert('Please enter a dependency ID');
                 return;
             }
 
             try {
-                const response = await fetch(`${getBaseUrl()}/api/questions`, {
+                const response = await fetch(`${getBaseUrl()}/api/dependencies/${id}`);
+                const data = await response.json();
+                displayResponse('dependencyResponse', data, !response.ok);
+            } catch (error) {
+                displayResponse('dependencyResponse', { error: error.message }, true);
+            }
+        }
+
+        async function submitRelatedBets() {
+            const marketId = document.getElementById('relatedBetsMarketId').value;
+            if (!marketId) {
+                alert('Please enter a market ID');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getBaseUrl()}/api/related-bets`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ question })
+                    body: JSON.stringify({ marketId })
                 });
                 const data = await response.json();
-                displayResponse('submitQuestionResponse', data, !response.ok);
+                displayResponse('submitRelatedBetsResponse', data, !response.ok);
 
                 if (response.ok) {
-                    document.getElementById('questionInput').value = '';
+                    document.getElementById('relatedBetsMarketId').value = '';
                 }
             } catch (error) {
-                displayResponse('submitQuestionResponse', { error: error.message }, true);
+                displayResponse('submitRelatedBetsResponse', { error: error.message }, true);
             }
         }
 
-        async function getAllQuestions() {
+        async function getAllRelatedBets() {
             try {
-                const response = await fetch(`${getBaseUrl()}/api/questions`);
+                const response = await fetch(`${getBaseUrl()}/api/related-bets`);
                 const data = await response.json();
-                displayResponse('allQuestionsResponse', data, !response.ok);
+                displayResponse('allRelatedBetsResponse', data, !response.ok);
             } catch (error) {
-                displayResponse('allQuestionsResponse', { error: error.message }, true);
+                displayResponse('allRelatedBetsResponse', { error: error.message }, true);
             }
         }
 
-        async function getQuestion() {
-            const id = document.getElementById('questionId').value;
+        async function getRelatedBet() {
+            const id = document.getElementById('relatedBetsId').value;
             if (!id) {
-                alert('Please enter a question ID');
+                alert('Please enter a job ID');
                 return;
             }
 
             try {
-                const response = await fetch(`${getBaseUrl()}/api/questions/${id}`);
+                const response = await fetch(`${getBaseUrl()}/api/related-bets/${id}`);
                 const data = await response.json();
-                displayResponse('questionResponse', data, !response.ok);
+                displayResponse('relatedBetResponse', data, !response.ok);
             } catch (error) {
-                displayResponse('questionResponse', { error: error.message }, true);
+                displayResponse('relatedBetResponse', { error: error.message }, true);
             }
         }
 

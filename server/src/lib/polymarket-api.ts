@@ -25,6 +25,6 @@ export async function fetchMarket(id: string): Promise<PolymarketMarket> {
 export async function searchMarkets(query: string): Promise<PolymarketMarket[]> {
   const markets = await fetchMarkets();
   return markets.filter(m =>
-    m.dependency?.toLowerCase().includes(query.toLowerCase())
+    m.question?.toLowerCase().includes(query.toLowerCase())
   );
 }

@@ -13,14 +13,12 @@ export interface Dependency {
 
 export interface PolymarketMarket {
   id: string;
-  dependency: string;
+  question: string;
   description: string;
   outcomes: string[];
   volume: string;
   liquidity: string;
 }
-
-// bets??????
 
 export type BetRelationship = 'IMPLIES' | 'CONTRADICTS' | 'PARTITION';
 

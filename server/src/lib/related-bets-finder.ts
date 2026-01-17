@@ -27,7 +27,7 @@ export async function* findRelatedBets(
   const systemPrompt = `You are analyzing prediction markets to find logical relationships.
 
 Source Market:
-- Question: ${sourceMarket.dependency}
+- Question: ${sourceMarket.question}
 - Description: ${sourceMarket.description}
 - Outcomes: ${sourceMarket.outcomes.join(', ')}
 
@@ -58,7 +58,7 @@ Return empty array if no relationships found: {"related": []}`;
 
     const batchContext = batch.map((m, idx) =>
       `${i + idx + 1}. ID: ${m.id}
-   Question: ${m.dependency}
+   Question: ${m.question}
    Description: ${m.description}
    Outcomes: ${m.outcomes.join(', ')}`
     ).join('\n\n');

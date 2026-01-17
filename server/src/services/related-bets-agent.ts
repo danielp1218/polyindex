@@ -74,7 +74,7 @@ export async function startRelatedBetsAgent() {
               });
 
               console.log(
-                `✓ Found related bet ${foundCount}: ${market.dependency}`,
+                `✓ Found related bet ${foundCount}: ${market.question}`,
               );
             } catch (error) {
               console.error(
