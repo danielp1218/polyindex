@@ -11,6 +11,7 @@ interface ProcessDecisionInput {
   keep: boolean;
   fallbackDecision?: DependencyDecision;
   fallbackWeight?: number;
+  risk?: number;
 }
 
 export interface DependencyDecisionResult {
@@ -25,6 +26,19 @@ function toUnique(urls: string[]): string[] {
 
 function extractQueueUrls(items: DependencyQueueItem[]): string[] {
   return items.map(item => item.url).filter(Boolean);
+}
+
+function normalizeRisk(value: number | undefined): number {
+  if (!Number.isFinite(value ?? NaN)) {
+    return 50;
+  }
+  if ((value as number) < 0) {
+    return 0;
+  }
+  if ((value as number) > 100) {
+    return 100;
+  }
+  return value as number;
 }
 
 function mapDependantsToQueue(
@@ -85,6 +99,7 @@ export async function processDependencyDecision({
   keep,
   fallbackDecision = 'yes',
   fallbackWeight = 1,
+  risk,
 }: ProcessDecisionInput): Promise<DependencyDecisionResult> {
   const state = await getDependencyState(eventUrl);
   const queue = state.queue;
@@ -111,6 +126,7 @@ export async function processDependencyDecision({
   }
 
   let response: DependenciesResponse | undefined;
+  const volatility = 0.5 + normalizeRisk(risk) / 100;
 
   try {
     response = await fetchDependencies({
@@ -118,7 +134,7 @@ export async function processDependencyDecision({
       weight: currentWeight,
       decision: currentDecision,
       visited: nextVisited,
-      volatility: 1,
+      volatility,
     });
 
     const parentId = current?.id ?? rootId;

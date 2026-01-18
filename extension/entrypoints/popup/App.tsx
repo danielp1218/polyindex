@@ -94,6 +94,7 @@ function App() {
     };
   }, [pageUrl, hasVisitedRoot, rootId, rootDecision, eventTitle]);
   const displayItem = queuedItem ?? rootFallbackItem;
+  const queueEmpty = !displayItem && hasVisitedRoot;
   const decisionDisabled = isProcessingDecision || !displayItem || !relationGraph;
 
   const graphView = useMemo<GraphData>(() => {
@@ -417,7 +418,7 @@ function App() {
     };
   }, [relationGraph, queuedItem]);
 
-  const handleDecision = async (accept: boolean) => {
+  const handleDecision = async (accept: boolean, risk: number) => {
     if (!pageUrl || !relationGraph || isProcessingDecision) {
       return;
     }
@@ -437,6 +438,7 @@ function App() {
         keep: accept,
         fallbackDecision: selectedItem?.decision ?? rootDecision,
         fallbackWeight: selectedItem?.weight ?? 1,
+        risk,
       });
 
       setDependencyQueue(result.queue);
@@ -547,6 +549,24 @@ function App() {
 
   // Decision Screen (main)
   if (currentScreen === 'decision') {
+    if (queueEmpty) {
+      return (
+        <div style={{
+          minWidth: '420px',
+          minHeight: '600px',
+          background: '#0a0f1a',
+          color: '#e2e8f0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: 'Inter, system-ui, sans-serif',
+        }}>
+          <span style={{ fontSize: '13px', color: '#94a3b8', letterSpacing: '0.4px' }}>
+            calculating...
+          </span>
+        </div>
+      );
+    }
     return (
       <DecisionScreen
         eventTitle={displayItem?.question ?? eventTitle}

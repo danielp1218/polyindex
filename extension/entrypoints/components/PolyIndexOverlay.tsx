@@ -9,7 +9,7 @@ interface PolyIndexOverlayProps {
 
 export default function PolyIndexOverlay({ eventSlug, userSelection }: PolyIndexOverlayProps) {
   const [accepted, setAccepted] = useState<boolean | null>(null);
-  const [riskLevel, setRiskLevel] = useState(0.5);
+  const [riskLevel, setRiskLevel] = useState(50);
   const [nodesExpanded, setNodesExpanded] = useState(false);
   const [showReasoning, setShowReasoning] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -49,21 +49,21 @@ export default function PolyIndexOverlay({ eventSlug, userSelection }: PolyIndex
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Risk</span>
-              <span className="text-[11px] text-slate-200 font-semibold">{riskLevel.toFixed(2)}</span>
+              <span className="text-[11px] text-slate-200 font-semibold">{Math.round(riskLevel)}</span>
             </div>
             <div className="bg-[#1a2438] border border-slate-700/50 rounded-xl px-3 py-2">
               <input
                 type="range"
                 min={0}
-                max={1}
-                step={0.01}
+                max={100}
+                step={1}
                 value={riskLevel}
                 onChange={(e) => setRiskLevel(Number(e.target.value))}
                 className="w-full accent-sky-400"
               />
               <div className="flex justify-between text-[9px] text-slate-500 mt-1">
                 <span>0</span>
-                <span>1</span>
+                <span>100</span>
               </div>
             </div>
           </div>

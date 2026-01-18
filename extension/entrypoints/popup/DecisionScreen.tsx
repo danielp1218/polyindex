@@ -30,7 +30,7 @@ interface DecisionScreenProps {
   userSelection: 'yes' | 'no' | null;
   profileImage: string | null;
   onViewNodes: () => void;
-  onDecision: (accepted: boolean) => void;
+  onDecision: (accepted: boolean, risk: number) => void;
   isProcessing: boolean;
   miniGraphData?: DecisionMiniGraphData | null;
   showUserSelection?: boolean;
@@ -71,7 +71,7 @@ export default function DecisionScreen({
   globalsError,
 }: DecisionScreenProps) {
   const [accepted, setAccepted] = useState<boolean | null>(null);
-  const [riskLevel, setRiskLevel] = useState(0.5);
+  const [riskLevel, setRiskLevel] = useState(50);
   const [viewNodesHover, setViewNodesHover] = useState(false);
   const [acceptBtnHover, setAcceptBtnHover] = useState(false);
   const [rejectBtnHover, setRejectBtnHover] = useState(false);
@@ -411,8 +411,8 @@ export default function DecisionScreen({
             <input
               type="range"
               min={0}
-              max={1}
-              step={0.01}
+              max={100}
+              step={1}
               value={riskLevel}
               onChange={(e) => setRiskLevel(Number(e.target.value))}
               style={{
@@ -421,8 +421,8 @@ export default function DecisionScreen({
                 accentColor: '#38bdf8',
               }}
             />
-            <span style={{ fontSize: '11px', fontWeight: 600, minWidth: '38px', textAlign: 'right' }}>
-              {riskLevel.toFixed(2)}
+            <span style={{ fontSize: '11px', fontWeight: 600, minWidth: '32px', textAlign: 'right' }}>
+              {Math.round(riskLevel)}
             </span>
           </div>
         </div>
@@ -690,7 +690,7 @@ export default function DecisionScreen({
             }}
             onClick={() => {
               setAccepted(true);
-              onDecision(true);
+              onDecision(true, riskLevel);
             }}
           >
             Accept
@@ -724,7 +724,7 @@ export default function DecisionScreen({
             }}
             onClick={() => {
               setAccepted(false);
-              onDecision(false);
+              onDecision(false, riskLevel);
             }}
           >
             Reject

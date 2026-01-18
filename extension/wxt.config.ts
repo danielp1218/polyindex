@@ -20,7 +20,7 @@ export default defineConfig({
         '96': 'icon/96.png',
         '128': 'icon/128.png',
       },
-      default_title: 'PolyIndex',
+      default_title: 'Pindex',
     },
     web_accessible_resources: [
       {

@@ -6,6 +6,7 @@ export interface DependencyWorkerRequest {
   keep: boolean;
   fallbackDecision?: DependencyDecision;
   fallbackWeight?: number;
+  risk?: number;
 }
 
 export async function processDependencyDecisionInBackground(

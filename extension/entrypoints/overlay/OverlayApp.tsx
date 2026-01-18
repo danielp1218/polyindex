@@ -69,7 +69,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   const [eventImageUrl, setEventImageUrl] = useState<string | null>(null);
   const [eventTitle, setEventTitle] = useState('Market Decision');
   const [accepted, setAccepted] = useState<boolean | null>(null);
-  const [riskLevel, setRiskLevel] = useState(0.5);
+  const [riskLevel, setRiskLevel] = useState(50);
   
   // Add screen state - moved to top level to prevent re-render issues
   const [newNodeLabel, setNewNodeLabel] = useState('');
@@ -138,6 +138,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   const showUserSelection = Boolean(rootFallbackItem && !queuedItem);
   const decisionTitle = displayItem?.question ?? eventTitle;
   const showLoader = currentScreen === 'decision' && (isLoading || !displayItem);
+  const queueEmpty = currentScreen === 'decision' && !displayItem && hasVisitedRoot;
 
   const graphView = useMemo<GraphData>(() => {
     if (!relationGraph) {
@@ -937,6 +938,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
         keep: accept,
         fallbackDecision: selectedItem?.decision ?? rootDecision,
         fallbackWeight: selectedItem?.weight ?? 1,
+        risk: riskLevel,
       });
 
       setDependencyQueue(result.queue);
@@ -1007,8 +1009,8 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
           <input
             type="range"
             min={0}
-            max={1}
-            step={0.01}
+            max={100}
+            step={1}
             value={riskLevel}
             onChange={(e) => setRiskLevel(Number(e.target.value))}
             style={{
@@ -1017,8 +1019,8 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
               accentColor: '#38bdf8',
             }}
           />
-          <span style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8f0', minWidth: '38px', textAlign: 'right' }}>
-            {riskLevel.toFixed(2)}
+          <span style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8f0', minWidth: '32px', textAlign: 'right' }}>
+            {Math.round(riskLevel)}
           </span>
         </div>
       </div>
@@ -1696,10 +1698,17 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
                 zIndex: 3,
                 flex: 1,
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
+                gap: '12px',
               }}>
                 <VideoLoader size={160} />
+                {queueEmpty && (
+                  <span style={{ fontSize: '13px', color: '#94a3b8', letterSpacing: '0.4px' }}>
+                    calculating...
+                  </span>
+                )}
               </div>
             ) : (
               <>

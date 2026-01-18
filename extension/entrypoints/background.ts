@@ -35,6 +35,7 @@ export default defineBackground(() => {
           keep: Boolean(payload.keep),
           fallbackDecision: payload.fallbackDecision,
           fallbackWeight: payload.fallbackWeight,
+          risk: payload.risk,
         });
         return { ok: true, result };
       } catch (error) {
