@@ -10,6 +10,7 @@ import { dependenciesRouter } from './routes/dependencies';
 import { polymarketRouter } from './routes/polymarket';
 import { relationsRouter } from './routes/relations';
 import { toolsRouter } from './routes/tools';
+import { relatedBetsRouter } from './routes/related-bets';
 
 // Setup tracing
 setupTracing();
@@ -31,6 +32,7 @@ app.get('/', (c) => {
       polymarket: '/api/polymarket',
       relations: '/api/relations',
       relationsPricing: '/api/relations/price',
+      relatedBets: '/api/related-bets',
       tools: '/tools',
     },
   });
@@ -41,6 +43,7 @@ app.route('/events', sseRouter);
 app.route('/api/dependencies', dependenciesRouter);
 app.route('/api/polymarket', polymarketRouter);
 app.route('/api/relations', relationsRouter);
+app.route('/api/related-bets', relatedBetsRouter);
 app.route('/tools', toolsRouter);
 
 const port = Number(process.env.PORT) || 8000;
