@@ -31,17 +31,19 @@ export function BalanceCard() {
           <line x1="228" y1="0" x2="228" y2="100" stroke="#374151" strokeWidth="1" strokeDasharray="2,4" />
           <line x1="285" y1="0" x2="285" y2="100" stroke="#374151" strokeWidth="1" strokeDasharray="2,4" />
           <line x1="342" y1="0" x2="342" y2="100" stroke="#374151" strokeWidth="1" strokeDasharray="2,4" />
-          {/* Chart fill */}
+          {/* Chart fill - more realistic with sharper peaks and valleys */}
           <path
-            d="M0,82 L20,75 L35,85 L50,65 L70,78 L85,45 L100,30 L115,50 L135,60 L155,35 L175,20 L195,40 L215,55 L235,42 L255,50 L275,35 L295,45 L315,28 L335,18 L355,30 L375,22 L400,15 L400,100 L0,100 Z"
+            d="M0,78 L15,82 L25,75 L35,88 L45,72 L55,80 L65,68 L75,55 L85,42 L95,35 L105,28 L115,38 L125,52 L135,45 L145,60 L155,48 L165,35 L175,22 L185,18 L195,32 L205,48 L215,42 L225,55 L235,38 L245,50 L255,42 L265,35 L275,28 L285,22 L295,18 L305,25 L315,32 L325,28 L335,22 L345,18 L355,25 L365,20 L375,15 L385,12 L400,10 L400,100 L0,100 Z"
             fill="url(#chartGradient)"
           />
-          {/* Chart line */}
+          {/* Chart line - pointy and realistic */}
           <path
-            d="M0,82 L20,75 L35,85 L50,65 L70,78 L85,45 L100,30 L115,50 L135,60 L155,35 L175,20 L195,40 L215,55 L235,42 L255,50 L275,35 L295,45 L315,28 L335,18 L355,30 L375,22 L400,15"
+            d="M0,78 L15,82 L25,75 L35,88 L45,72 L55,80 L65,68 L75,55 L85,42 L95,35 L105,28 L115,38 L125,52 L135,45 L145,60 L155,48 L165,35 L175,22 L185,18 L195,32 L205,48 L215,42 L225,55 L235,38 L245,50 L255,42 L265,35 L275,28 L285,22 L295,18 L305,25 L315,32 L325,28 L335,22 L345,18 L355,25 L365,20 L375,15 L385,12 L400,10"
             fill="none"
             stroke="#e8b923"
-            strokeWidth="2"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="miter"
           />
         </svg>
         <div className="flex justify-between text-xs text-gray-500 -mt-1">
