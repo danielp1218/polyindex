@@ -375,8 +375,8 @@ export function graphToGraphData(root: RelationGraphNode): GraphData {
 
     for (const child of node.children ?? []) {
       links.push({
-        source: node.id,
-        target: child.id,
+        source: child.id,
+        target: node.id,
         relationship: child.relation,
         reasoning: child.explanation,
       });

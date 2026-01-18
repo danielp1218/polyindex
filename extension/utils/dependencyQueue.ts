@@ -28,6 +28,19 @@ function extractQueueUrls(items: DependencyQueueItem[]): string[] {
   return items.map(item => item.url).filter(Boolean);
 }
 
+function extractQueueIds(items: DependencyQueueItem[]): string[] {
+  return items.map(item => item.id).filter(Boolean);
+}
+
+function deduplicateQueue(items: DependencyQueueItem[]): DependencyQueueItem[] {
+  const seen = new Set<string>();
+  return items.filter(item => {
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+}
+
 function normalizeRisk(value: number | undefined): number {
   if (!Number.isFinite(value ?? NaN)) {
     return 50;
@@ -61,9 +74,23 @@ function mapDependantsToQueue(
         : undefined;
   const sourceId = typeof sourceMarket?.id === 'string' ? sourceMarket.id : undefined;
 
+  // Convert visited URLs to event IDs for more robust comparison
+  const visitedIds = new Set(
+    visited.map(url => getEventIdFromUrl(url)).filter(Boolean)
+  );
+  // Also track visited URLs directly for fallback comparison
+  const visitedUrlSet = new Set(visited);
+
   return dependants
     .filter(dep => typeof dep?.url === 'string' && dep.url.length > 0)
-    .filter(dep => !visited.includes(dep.url))
+    .filter(dep => {
+      // Skip if URL is already in visited set
+      if (visitedUrlSet.has(dep.url)) return false;
+      // Skip if event ID is already in visited IDs
+      const depId = getEventIdFromUrl(dep.url);
+      if (depId && visitedIds.has(depId)) return false;
+      return true;
+    })
     .map(dep => {
       const imageUrl =
         typeof dep.imageUrl === 'string'
@@ -102,7 +129,8 @@ export async function processDependencyDecision({
   risk,
 }: ProcessDecisionInput): Promise<DependencyDecisionResult> {
   const state = await getDependencyState(eventUrl);
-  const queue = state.queue;
+  // Deduplicate queue to handle any legacy duplicates in storage
+  const queue = deduplicateQueue(state.queue);
   const visited = state.visited;
 
   const current = queue[0] ?? null;
@@ -138,12 +166,14 @@ export async function processDependencyDecision({
     });
 
     const parentId = current?.id ?? rootId;
+    const existingIds = new Set(extractQueueIds(nextQueue));
     const newItems = mapDependantsToQueue(
       response.dependants || [],
       response.sourceMarket,
       nextVisited,
       { parentId, parentUrl: currentUrl }
-    );
+    ).filter(item => !existingIds.has(item.id)); // Prevent duplicate IDs in queue
+
     if (newItems.length > 0) {
       nextQueue = [...nextQueue, ...newItems];
       nextVisited = toUnique([...nextVisited, ...extractQueueUrls(newItems)]);

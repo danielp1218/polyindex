@@ -125,6 +125,9 @@ export default function DecisionScreen({
       .attr('cx', 0)
       .attr('cy', 0);
 
+    // Access tooltip for edge hover
+    const tooltip = d3.select(tooltipRef.current);
+
     // Draw link with relationship color
     const link = g.append('g')
       .selectAll('line')
@@ -132,7 +135,29 @@ export default function DecisionScreen({
       .join('line')
       .attr('stroke', (d: any) => getRelationshipColor(d.relationship))
       .attr('stroke-opacity', 0.6)
-      .attr('stroke-width', 2);
+      .attr('stroke-width', 2)
+      .style('cursor', 'pointer')
+      .on('mouseenter', (event: MouseEvent, d: any) => {
+        d3.select(event.target as Element)
+          .attr('stroke-opacity', 1);
+
+        const relationship = d.relationship || 'RELATED';
+        tooltip
+          .style('opacity', '1')
+          .style('left', `${event.offsetX + 15}px`)
+          .style('top', `${event.offsetY - 5}px`)
+          .html(`<strong style="color: ${getRelationshipColor(d.relationship)}">${relationship}</strong>${d.reasoning ? `<br/><span style="color: #94a3b8; font-size: 10px; margin-top: 4px; display: block;">${d.reasoning}</span>` : ''}`);
+      })
+      .on('mousemove', (event: MouseEvent) => {
+        tooltip
+          .style('left', `${event.offsetX + 15}px`)
+          .style('top', `${event.offsetY - 5}px`);
+      })
+      .on('mouseleave', (event: MouseEvent) => {
+        d3.select(event.target as Element)
+          .attr('stroke-opacity', 0.6);
+        tooltip.style('opacity', '0');
+      });
 
     // Draw nodes (stationary - no drag)
     const node = g.append('g')

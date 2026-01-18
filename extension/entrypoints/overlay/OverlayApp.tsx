@@ -95,6 +95,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   const [globalsError, setGlobalsError] = useState<string | null>(null);
   const [globalsLoading, setGlobalsLoading] = useState(false);
   const [displayItemImage, setDisplayItemImage] = useState<string | null>(null);
+  const [sourceItemImage, setSourceItemImage] = useState<string | null>(null);
 
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -142,7 +143,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   
   // Show loader until we have FULL dependency data (with explanation/source), not just root fallback
   const hasFullDependencyData = queuedItem && (queuedItem.explanation || queuedItem.sourceQuestion);
-  const showLoader = isLoading || (currentScreen === 'decision' && !hasFullDependencyData && !hasVisitedRoot);
+  const showLoader = isLoading || isProcessingDecision || (currentScreen === 'decision' && !hasFullDependencyData && !hasVisitedRoot);
   const queueEmpty = currentScreen === 'decision' && !displayItem && hasVisitedRoot;
 
   const graphView = useMemo<GraphData>(() => {
@@ -200,14 +201,14 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
           fullLabel: sourceLabel,
           x: 70,
           y: 55,
-          imageUrl: sourceNode.imageUrl,
+          imageUrl: sourceNode.imageUrl || sourceItemImage,
         },
         targetNode,
       ],
       links: [
         {
-          source: sourceNode.id,
-          target: displayItem.id,
+          source: displayItem.id,
+          target: sourceNode.id,
           relationship: displayItem.relation as BetRelationship,
           reasoning: displayItem.explanation,
         },
@@ -215,9 +216,9 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
       sourceLabel,
       targetLabel,
       reasoning: displayItem.explanation ?? '',
-      sourceImageUrl: sourceNode.imageUrl,
+      sourceImageUrl: sourceNode.imageUrl || sourceItemImage,
     };
-  }, [relationGraph, displayItem, displayItemImage]);
+  }, [relationGraph, displayItem, displayItemImage, sourceItemImage]);
 
   useEffect(() => {
     setAccepted(null);
@@ -401,7 +402,10 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
     return () => {
       isActive = false;
     };
-  }, [isVisible, hasStarted, currentUrl, eventTitle, eventImageUrl, profileImage, userSelection, riskLevel]);
+  // Note: eventImageUrl and profileImage removed from deps to prevent race condition
+  // when accepting nodes. Root metadata is updated by separate effect.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible, hasStarted, currentUrl]);
 
   useEffect(() => {
     if (!currentUrl) {
@@ -539,6 +543,40 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
     };
   }, [displayItem?.id, displayItem?.url, displayItem?.imageUrl]);
 
+  // Fetch image for source node if missing
+  useEffect(() => {
+    const sourceUrl = displayItem?.sourceUrl || displayItem?.parentUrl;
+    if (!sourceUrl) {
+      setSourceItemImage(null);
+      return;
+    }
+
+    // Check if we already have the image from the relation graph
+    const sourceNode = displayItem?.parentId && relationGraph
+      ? findNodeById(relationGraph, displayItem.parentId)
+      : relationGraph;
+
+    if (sourceNode?.imageUrl) {
+      setSourceItemImage(null); // Use graph's image
+      return;
+    }
+
+    let isActive = true;
+    setSourceItemImage(null);
+
+    const fetchImage = async () => {
+      const info = await fetchEventInfoFromUrl(sourceUrl);
+      if (isActive && info?.imageUrl) {
+        setSourceItemImage(info.imageUrl);
+      }
+    };
+
+    void fetchImage();
+    return () => {
+      isActive = false;
+    };
+  }, [displayItem?.parentId, displayItem?.sourceUrl, displayItem?.parentUrl, relationGraph]);
+
   useEffect(() => {
     if (!relationGraph) {
       setGlobalsBaseline(null);
@@ -642,16 +680,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
         .force('link', d3.forceLink(links).distance(200))
         .alphaDecay(0.05);
 
-      // Draw link with relationship color
-      const link = g.append('g')
-        .selectAll('line')
-        .data(links)
-        .join('line')
-        .attr('stroke', (d: any) => getRelationshipColor(d.relationship))
-        .attr('stroke-opacity', 0.6)
-        .attr('stroke-width', 2);
-
-      // Add circular clip path for mini graph images
+      // Add defs for clip path and arrow markers
       const defs = svg.append('defs');
       defs.append('clipPath')
         .attr('id', 'miniCircleClip')
@@ -659,6 +688,37 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
         .attr('r', nodeRadius - 2)
         .attr('cx', 0)
         .attr('cy', 0);
+
+      // Add arrow markers for each relationship color in mini graph
+      const miniColors = ['#4a7c6f', '#8b5c5c', '#5c7a9e', '#7a6b8a', '#8a7a5c', '#64748b'];
+      miniColors.forEach((color, i) => {
+        defs.append('marker')
+          .attr('id', `mini-arrow-${i}`)
+          .attr('viewBox', '0 -5 10 10')
+          .attr('refX', nodeRadius + 8)
+          .attr('refY', 0)
+          .attr('markerWidth', 5)
+          .attr('markerHeight', 5)
+          .attr('orient', 'auto')
+          .append('path')
+          .attr('fill', color)
+          .attr('d', 'M0,-5L10,0L0,5');
+      });
+
+      const miniColorToMarkerId = (color: string) => {
+        const index = miniColors.indexOf(color);
+        return index >= 0 ? `mini-arrow-${index}` : 'mini-arrow-5';
+      };
+
+      // Draw link with relationship color and arrow
+      const link = g.append('g')
+        .selectAll('line')
+        .data(links)
+        .join('line')
+        .attr('stroke', (d: any) => getRelationshipColor(d.relationship))
+        .attr('stroke-opacity', 0.6)
+        .attr('stroke-width', 2)
+        .attr('marker-end', (d: any) => `url(#${miniColorToMarkerId(getRelationshipColor(d.relationship))})`);
 
       const node = g.append('g')
         .selectAll('g')
@@ -851,24 +911,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
         });
       });
 
-    const link = g.append('g')
-      .selectAll('line')
-      .data(links)
-      .join('line')
-      .attr('stroke', (d: any) => getRelationshipColor(d.relationship))
-      .attr('stroke-opacity', 0.6)
-      .attr('stroke-width', 2)
-      .style('cursor', 'pointer')
-      .on('mouseenter', (event: MouseEvent, d: any) => {
-        d3.select(event.target as Element)
-          .attr('stroke-opacity', 1)
-          .attr('stroke-width', 3);
-      })
-      .on('mouseleave', (event: MouseEvent) => {
-        d3.select(event.target as Element)
-          .attr('stroke-opacity', 0.6)
-          .attr('stroke-width', 2);
-      });
+    const vizTooltip = d3.select(vizTooltipRef.current);
 
     const defs = svg.append('defs');
     defs.append('clipPath')
@@ -877,6 +920,65 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
       .attr('r', 20)
       .attr('cx', 0)
       .attr('cy', 0);
+
+    // Add arrow markers for each relationship type
+    const relationshipColors = ['#4a7c6f', '#8b5c5c', '#5c7a9e', '#7a6b8a', '#8a7a5c', '#64748b'];
+    relationshipColors.forEach((color, i) => {
+      defs.append('marker')
+        .attr('id', `arrow-${i}`)
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 28) // Position arrow at edge of node (nodeRadius + arrow size)
+        .attr('refY', 0)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('fill', color)
+        .attr('d', 'M0,-5L10,0L0,5');
+    });
+
+    // Create a color to marker ID mapping
+    const colorToMarkerId = (color: string) => {
+      const index = relationshipColors.indexOf(color);
+      return index >= 0 ? `arrow-${index}` : 'arrow-5'; // Default to gray
+    };
+
+    const link = g.append('g')
+      .selectAll('line')
+      .data(links)
+      .join('line')
+      .attr('stroke', (d: any) => getRelationshipColor(d.relationship))
+      .attr('stroke-opacity', 0.6)
+      .attr('stroke-width', 2)
+      .attr('marker-end', (d: any) => `url(#${colorToMarkerId(getRelationshipColor(d.relationship))})`)
+      .style('cursor', 'pointer')
+      .on('mouseenter', (event: MouseEvent, d: any) => {
+        d3.select(event.target as Element)
+          .attr('stroke-opacity', 1);
+
+        // Show relationship tooltip
+        const sourceLabel = typeof d.source === 'object' ? d.source.label : d.source;
+        const targetLabel = typeof d.target === 'object' ? d.target.label : d.target;
+        const relationship = d.relationship || 'RELATED';
+        const tooltipText = `${relationship}${d.reasoning ? `\n\n${d.reasoning}` : ''}`;
+
+        vizTooltip
+          .style('opacity', '1')
+          .style('left', `${event.offsetX + 15}px`)
+          .style('top', `${event.offsetY - 5}px`)
+          .style('white-space', 'pre-wrap')
+          .html(`<strong style="color: ${getRelationshipColor(d.relationship)}">${relationship}</strong>${d.reasoning ? `<br/><span style="color: #94a3b8; font-size: 10px; margin-top: 4px; display: block;">${d.reasoning}</span>` : ''}`);
+      })
+      .on('mousemove', (event: MouseEvent) => {
+        vizTooltip
+          .style('left', `${event.offsetX + 15}px`)
+          .style('top', `${event.offsetY - 5}px`);
+      })
+      .on('mouseleave', (event: MouseEvent) => {
+        d3.select(event.target as Element)
+          .attr('stroke-opacity', 0.6);
+        vizTooltip.style('opacity', '0');
+      });
 
     const node = g.append('g')
       .selectAll('g')
@@ -930,22 +1032,22 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
       }
     });
 
-    const tooltip = d3.select(vizTooltipRef.current);
     node
       .on('mouseenter', (event: MouseEvent, d: any) => {
-        tooltip
+        vizTooltip
           .style('opacity', '1')
           .style('left', `${event.offsetX + 15}px`)
           .style('top', `${event.offsetY - 5}px`)
+          .style('white-space', 'normal')
           .text(d.label);
       })
       .on('mousemove', (event: MouseEvent) => {
-        tooltip
+        vizTooltip
           .style('left', `${event.offsetX + 15}px`)
           .style('top', `${event.offsetY - 5}px`);
       })
       .on('mouseleave', () => {
-        tooltip.style('opacity', '0');
+        vizTooltip.style('opacity', '0');
       });
 
     simulation.on('tick', () => {
@@ -1781,7 +1883,10 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                 {currentScreen === 'decision' && (
                   <button
-                    onClick={() => setCurrentScreen('visualize')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentScreen('visualize');
+                    }}
                     onMouseEnter={() => setViewNodesHover(true)}
                     onMouseLeave={() => setViewNodesHover(false)}
                     style={{
