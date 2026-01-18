@@ -166,6 +166,12 @@ export async function processDependencyDecision({
     return { queue: nextQueue, visited: nextVisited };
   }
 
+  if (current) {
+    // Avoid expanding dependencies on every accept; only the root decision triggers expansion.
+    await setDependencyState(eventUrl, nextQueue, nextVisited);
+    return { queue: nextQueue, visited: nextVisited };
+  }
+
   let response: DependenciesResponse | undefined;
   const volatility = 0.5 + normalizeRisk(risk) / 100;
 
