@@ -68,31 +68,8 @@ export function FeaturesSection() {
   return (
     <section 
       ref={containerRef}
-      className="min-h-screen py-32 px-8 relative overflow-hidden"
-      style={{
-        background: `linear-gradient(to bottom, 
-          #0d1926 0%, 
-          #0d1926 5%,
-          #0f1b2a 15%,
-          #111d2e 30%,
-          #0d1926 50%,
-          #0d1926 100%
-        )`
-      }}
+      className="min-h-screen py-32 px-8 relative overflow-hidden bg-[#0d1926]"
     >
-      {/* Seamless Transition Overlay - Enhanced gradient blend */}
-      <div 
-        className="absolute top-0 left-0 right-0 h-96 pointer-events-none z-20"
-        style={{
-          background: `linear-gradient(to bottom, 
-            rgba(17, 29, 46, 0.8) 0%,
-            rgba(17, 29, 46, 0.6) 20%,
-            rgba(13, 25, 38, 0.4) 40%,
-            rgba(13, 25, 38, 0.2) 60%,
-            transparent 100%
-          )`
-        }}
-      />
       {/* Ambient Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div 
@@ -239,12 +216,8 @@ export function FeaturesSection() {
         </motion.div>
       </div>
 
-      {/* Decorative side beams */}
-      <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent" />
-      <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent" />
-      
       {/* Footer */}
-      <footer className="absolute bottom-0 left-0 right-0 py-8 text-center border-t border-white/5">
+      <footer className="absolute bottom-0 left-0 right-0 py-8 text-center">
         <p className="text-white/30 text-xs tracking-wide">
           © {new Date().getFullYear()} Pindex. All rights reserved.
         </p>

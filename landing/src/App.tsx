@@ -158,19 +158,6 @@ function App() {
         </div>
       </main>
       
-      {/* Bottom transition gradient for seamless blend */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-10"
-        style={{
-          background: `linear-gradient(to bottom, 
-            transparent 0%,
-            rgba(13, 25, 38, 0.3) 30%,
-            rgba(17, 29, 46, 0.6) 60%,
-            rgba(17, 29, 46, 0.9) 85%,
-            #111d2e 100%
-          )`
-        }}
-      />
     </div>
   );
 }
