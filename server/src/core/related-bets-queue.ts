@@ -3,10 +3,11 @@ import type { RelatedBetsJob, RelatedBet } from '../types';
 class RelatedBetsQueue {
   private queue: RelatedBetsJob[] = [];
 
-  add(sourceMarketId: string): RelatedBetsJob {
+  add(sourceMarketId: string, eventSlug?: string): RelatedBetsJob {
     const job: RelatedBetsJob = {
       id: crypto.randomUUID(),
       sourceMarketId,
+      eventSlug,
       createdAt: Date.now(),
       status: 'pending',
       relatedBets: [],

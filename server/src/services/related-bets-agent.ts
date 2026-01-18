@@ -36,7 +36,7 @@ export async function startRelatedBetsAgent() {
 
           // Find related bets using AI (streaming generator)
           let foundCount = 0;
-          for await (const foundBet of findRelatedBets(sourceMarket)) {
+          for await (const foundBet of findRelatedBets(sourceMarket, job.eventSlug)) {
             try {
               // Fetch full market data
               const market = await fetchMarket(foundBet.marketId);
@@ -47,6 +47,8 @@ export async function startRelatedBetsAgent() {
                 market,
                 relationship: foundBet.relationship,
                 reasoning: foundBet.reasoning,
+                yesPercentage: foundBet.yesPercentage,
+                noPercentage: foundBet.noPercentage,
               };
 
               // Add to job's related bets list

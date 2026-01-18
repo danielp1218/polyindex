@@ -3,8 +3,16 @@ import { priceRelationSet } from '../services/relation-analyzer';
 import type {
   PricingOptions,
   RelationInput,
-  RelationType,
-} from '@polyindex/relations-engine';
+} from '../services/relation-analyzer';
+
+// Relation types
+type RelationType =
+  | 'IMPLIES'
+  | 'CONTRADICTS'
+  | 'PARTITION_OF'
+  | 'SUBEVENT'
+  | 'CONDITIONED_ON'
+  | 'WEAK_SIGNAL';
 
 export const relationsRouter = new Hono();
 
