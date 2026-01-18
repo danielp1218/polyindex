@@ -147,6 +147,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   const hasFullDependencyData = queuedItem && (queuedItem.explanation || queuedItem.sourceQuestion);
   const showLoader = isLoading || isProcessingDecision || (currentScreen === 'decision' && !hasFullDependencyData && !hasVisitedRoot);
   const queueEmpty = currentScreen === 'decision' && !displayItem && hasVisitedRoot;
+  const decisionDisabled = isProcessingDecision || !displayItem || !relationGraph;
 
   const graphView = useMemo<GraphData>(() => {
     if (!relationGraph) {
@@ -1167,12 +1168,16 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   };
 
   const handleDecision = async (accept: boolean) => {
-    if (!currentUrl || !relationGraph || isProcessingDecision) {
+    if (!currentUrl || !relationGraph || decisionDisabled) {
       return;
     }
 
     setIsProcessingDecision(true);
     const selectedItem = queuedItem ?? rootFallbackItem;
+    if (!selectedItem) {
+      setIsProcessingDecision(false);
+      return;
+    }
     const isRootFallback = Boolean(selectedItem && !queuedItem);
 
     let nextGraph = relationGraph;
@@ -1541,14 +1546,14 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
         <button
           onMouseEnter={() => setAcceptBtnHover(true)}
           onMouseLeave={() => setAcceptBtnHover(false)}
-          disabled={isProcessingDecision}
+          disabled={decisionDisabled}
           style={{
             flex: 1,
             padding: '8px 12px',
             borderRadius: '8px',
             fontWeight: 500,
             fontSize: '12px',
-            cursor: isProcessingDecision ? 'not-allowed' : 'pointer',
+            cursor: decisionDisabled ? 'not-allowed' : 'pointer',
             border: accepted === true 
               ? '1px solid rgba(110, 231, 183, 0.3)' 
               : acceptBtnHover 
@@ -1563,7 +1568,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
               ? '0 8px 32px rgba(70, 100, 140, 0.3)' 
               : '0 2px 8px rgba(0, 0, 0, 0.15)',
             filter: acceptBtnHover && accepted !== true ? 'brightness(1.25)' : 'brightness(1)',
-            opacity: isProcessingDecision ? 0.6 : 1,
+            opacity: decisionDisabled ? 0.6 : 1,
           }}
           onClick={() => {
             setAccepted(accepted === true ? null : true);
@@ -1575,14 +1580,14 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
         <button
           onMouseEnter={() => setRejectBtnHover(true)}
           onMouseLeave={() => setRejectBtnHover(false)}
-          disabled={isProcessingDecision}
+          disabled={decisionDisabled}
           style={{
             flex: 1,
             padding: '8px 12px',
             borderRadius: '8px',
             fontWeight: 500,
             fontSize: '12px',
-            cursor: isProcessingDecision ? 'not-allowed' : 'pointer',
+            cursor: decisionDisabled ? 'not-allowed' : 'pointer',
             border: accepted === false 
               ? '1px solid rgba(252, 165, 165, 0.3)' 
               : rejectBtnHover 
@@ -1597,7 +1602,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
               ? '0 8px 32px rgba(70, 100, 140, 0.3)' 
               : '0 2px 8px rgba(0, 0, 0, 0.15)',
             filter: rejectBtnHover && accepted !== false ? 'brightness(1.25)' : 'brightness(1)',
-            opacity: isProcessingDecision ? 0.6 : 1,
+            opacity: decisionDisabled ? 0.6 : 1,
           }}
           onClick={() => {
             setAccepted(accepted === false ? null : false);
