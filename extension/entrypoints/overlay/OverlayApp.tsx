@@ -406,6 +406,13 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   const [isDragging, setIsDragging] = useState(false);
   const dragOffset = useRef({ x: 0, y: 0 });
 
+  // Reset position to center when overlay opens
+  useEffect(() => {
+    if (isVisible) {
+      setPosition(null);
+    }
+  }, [isVisible]);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.closest('[data-draggable="true"]')) {
@@ -905,24 +912,24 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   return (
     <AnimatePresence>
       {isVisible && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(0, 0, 0, 0.5)',
-              backdropFilter: 'blur(4px)',
-              zIndex: 99998,
-              pointerEvents: 'auto',
-            }}
-            onClick={onClose}
-          />
-          
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 99998,
+            pointerEvents: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onClick={onClose}
+        >
           {/* Panel */}
           <motion.div
             ref={overlayRef}
@@ -930,11 +937,11 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            onClick={(e) => e.stopPropagation()}
             style={{
-              position: 'fixed',
-              top: position ? position.y : '50%',
-              left: position ? position.x : '50%',
-              transform: position === null ? 'translate(-50%, -50%)' : 'none',
+              position: position ? 'absolute' : 'relative',
+              top: position ? position.y : undefined,
+              left: position ? position.x : undefined,
               width: '420px',
               height: '600px',
               background: 'linear-gradient(145deg, #0f1520 0%, #0a0e16 50%, #080c12 100%)',
@@ -1143,7 +1150,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
               <span style={{ fontSize: '9px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', color: '#475569' }}>pindex</span>
             </div>
           </motion.div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   );
