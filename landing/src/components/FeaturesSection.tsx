@@ -1,57 +1,146 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 
-const FeatureCard = ({ title, description, icon, delay, color }: { 
+// Prediction Market Card Component
+const MarketCard = ({ 
+  image, 
+  title, 
+  percentage, 
+  volume, 
+  frequency,
+  zIndex,
+  offsetY,
+  offsetX,
+  width = '240px',
+  glowColor = 'rgba(255,255,255,0.05)',
+  hoverBorderOpacity = '20',
+  showGlow = true,
+}: { 
+  image?: string;
   title: string; 
-  description: string; 
-  icon: React.ReactNode; 
-  delay: number;
-  color: string;
+  percentage: number;
+  volume: string;
+  frequency?: string;
+  zIndex: number;
+  offsetY: number;
+  offsetX: number;
+  width?: string;
+  glowColor?: string;
+  hoverBorderOpacity?: string;
+  showGlow?: boolean;
 }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay }}
-      whileHover={{ y: -5, scale: 1.02 }}
-      className="group relative p-8 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-all duration-500 overflow-hidden"
+    <div
+      className="absolute top-0 right-0 group"
+      style={{ 
+        zIndex: zIndex,
+        transform: `translate(${offsetX}px, ${offsetY}px)`,
+      }}
     >
-      {/* Background Glow */}
-      <div 
-        className="absolute -right-20 -top-20 w-40 h-40 rounded-full blur-[80px] opacity-0 group-hover:opacity-20 transition-opacity duration-500"
-        style={{ backgroundColor: color }}
-      />
+      {/* Outer Glow Effect - Enhanced */}
+      {showGlow && (
+        <div 
+          className="absolute inset-[-20px] blur-[40px] opacity-0 group-hover:opacity-40 transition-opacity duration-500 rounded-[2rem] -z-10"
+          style={{ backgroundColor: glowColor }}
+        />
+      )}
       
-      {/* Icon Container */}
+      {/* Card - Enhanced Beauty */}
       <div 
-        className="w-14 h-14 rounded-xl mb-6 flex items-center justify-center relative overflow-hidden group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-500"
+        className={`relative bg-[#1a2332]/90 backdrop-blur-2xl rounded-2xl p-5 border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.6)] transition-all duration-300 ${
+          hoverBorderOpacity === '30' ? 'group-hover:border-white/30' : 'group-hover:border-white/20'
+        }`}
         style={{ 
-          background: `linear-gradient(135deg, ${color}33 0%, ${color}11 100%)`,
-          border: `1px solid ${color}44`
+          width: width,
+          background: 'linear-gradient(135deg, rgba(26, 35, 50, 0.95) 0%, rgba(13, 25, 38, 0.9) 100%)'
         }}
       >
-        <div className="relative z-10 text-white group-hover:scale-110 transition-transform duration-500">
-          {icon}
+        {/* Subtle Shine Effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl pointer-events-none" />
+        
+        <div className="flex items-start gap-4 mb-4 relative z-10">
+          {/* Profile Image - Smaller but nicer */}
+          <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-gray-700/50 to-gray-900/50 border border-white/5 shadow-inner flex items-center justify-center">
+            {image ? (
+              <img src={image} alt={title} className="w-full h-full object-cover" />
+            ) : title.toLowerCase().includes('bitcoin') || title.toLowerCase().includes('btc') ? (
+              <div className="w-full h-full bg-orange-500 flex items-center justify-center">
+                <span className="text-2xl font-bold">&#8383;</span>
         </div>
-        <motion.div 
-          className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"
-        />
+            ) : title.toLowerCase().includes('spacex') || title.toLowerCase().includes('starship') ? (
+              <img src="/betlist/spacex.png" alt="SpaceX" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-xl filter drop-shadow-sm">📊</span>
+            )}
       </div>
 
-      <h3 className="text-2xl font-semibold text-white mb-4 group-hover:text-white transition-colors duration-300">
+          {/* Title and Percentage */}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-white font-semibold text-[13px] leading-tight mb-2.5 line-clamp-2 tracking-wide group-hover:text-white transition-colors">
         {title}
       </h3>
-      <p className="text-gray-400 leading-relaxed text-lg group-hover:text-gray-300 transition-colors duration-300">
-        {description}
-      </p>
+            
+            {/* Percentage with circular progress - Smaller */}
+            <div className="flex items-center gap-2">
+              <div className="relative w-9 h-9">
+                <svg className="w-9 h-9 transform -rotate-90" viewBox="0 0 40 40">
+                  <circle
+                    cx="20"
+                    cy="20"
+                    r="18"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.05)"
+                    strokeWidth="3"
+                  />
+                  <motion.circle
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: percentage / 100 }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                    cx="20"
+                    cy="20"
+                    r="18"
+                    fill="none"
+                    stroke={percentage >= 50 ? '#6fd1b0' : '#fca5a5'}
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    style={{ filter: `drop-shadow(0 0 4px ${percentage >= 50 ? '#6fd1b0' : '#fca5a5'}44)` }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-[11px] font-bold text-white/90">
+                    {percentage}%
+                  </span>
+                </div>
+              </div>
+              <span className="text-[11px] text-gray-400 font-medium uppercase tracking-tighter opacity-70">chance</span>
+            </div>
+          </div>
+        </div>
 
-      {/* Bottom Accent Line */}
-      <div 
-        className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent w-0 group-hover:w-full transition-all duration-700"
-        style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }}
-      />
-    </motion.div>
+        {/* Yes/No Buttons - More Beautiful */}
+        <div className="flex gap-2 mb-4 relative z-10">
+          <button className="flex-1 py-2 px-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-bold uppercase tracking-wider hover:bg-emerald-500/20 transition-all active:scale-95 shadow-[0_4px_12px_rgba(16,185,129,0.1)]">
+            Yes
+          </button>
+          <button className="flex-1 py-2 px-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-bold uppercase tracking-wider hover:bg-red-500/20 transition-all active:scale-95 shadow-[0_4px_12px_rgba(239,68,68,0.1)]">
+            No
+          </button>
+        </div>
+
+        {/* Volume Info - Smaller */}
+        <div className="flex items-center justify-between text-[10px] text-gray-500 pt-2.5 border-t border-white/5 relative z-10">
+          <span className="font-medium tracking-tight opacity-60">{volume} Vol.</span>
+          {frequency && (
+            <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span className="font-medium">{frequency}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -99,16 +188,422 @@ export function FeaturesSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-24"
         >
-          <h2 className="text-5xl md:text-7xl text-white font-serif font-bold mb-6 tracking-tight">
-            Why <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#6fd1b0] to-[#ba96e3]">Pindex</span>?
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-[#6fd1b0] to-[#ba96e3] mx-auto mb-8 rounded-full" />
-          <p className="text-gray-400 text-xl md:text-2xl max-w-3xl mx-auto font-light leading-relaxed">
-            Experience the future of prediction market investing with  <br /> <span className="text-white font-medium"> agentic index funds</span>.
-          </p>
+         
+         
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 relative">
+        {/* Bento Box Grid Layout - 2 on top, 1 on bottom */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Top Left: Container 1 - Extension UI Showcase with Radial Blur */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="bg-[#1a2332]/80 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300 group relative overflow-hidden h-[550px]"
+          >
+            {/* Blurred background simulating Polymarket grid of cards */}
+            <div className="absolute inset-0 blur-[5px] opacity-40 scale-105">
+              {/* Grid of prediction market cards */}
+              <div className="grid grid-cols-4 gap-2 p-3 h-full">
+                {/* Row 1 */}
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-emerald-400">58%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded text-[7px] text-emerald-400 flex items-center justify-center">Yes</div>
+                    <div className="flex-1 h-5 bg-red-500/30 rounded text-[7px] text-red-400 flex items-center justify-center">No</div>
+                  </div>
+                  <div className="text-[6px] text-gray-500">$2m Vol.</div>
+                </div>
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-red-400">3%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$1m Vol.</div>
+                </div>
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-red-400">13%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$2m Vol.</div>
+                </div>
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-emerald-400">23%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$46k Vol.</div>
+                </div>
+                {/* Row 2 */}
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-emerald-400">77%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$60k Vol.</div>
+                </div>
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-red-400">2%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$116k Vol.</div>
+                </div>
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-red-400">22%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$2k Vol.</div>
+                </div>
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-red-400">&lt;1%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$91k Vol.</div>
+                </div>
+                {/* Row 3 */}
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-red-400">3%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$47k Vol.</div>
+                </div>
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-red-400">7%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$46k Vol.</div>
+                </div>
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-emerald-400">46%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">NEW</div>
+                </div>
+                <div className="bg-[#1e2d3d] rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-gray-600 rounded-md" />
+                    <div className="flex-1 h-3 bg-white/20 rounded" />
+                    <div className="text-[8px] text-red-400">4%</div>
+                  </div>
+                  <div className="flex gap-1 mb-1">
+                    <div className="flex-1 h-5 bg-emerald-500/30 rounded" />
+                    <div className="flex-1 h-5 bg-red-500/30 rounded" />
+                  </div>
+                  <div className="text-[6px] text-gray-500">$5k Vol.</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Radial blur/vignette effect */}
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ 
+                background: 'radial-gradient(ellipse at center, transparent 20%, rgba(13,25,38,0.4) 50%, rgba(13,25,38,0.85) 80%, rgba(13,25,38,0.98) 100%)',
+              }} 
+            />
+            
+            {/* Glow behind modal */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[400px] bg-[#6fd1b0]/10 blur-[80px] rounded-full pointer-events-none" />
+            
+            {/* Extension Modal UI - positioned to show top, cut off at bottom */}
+            <div className="relative z-10 h-full flex flex-col items-center justify-start pt-16 p-6">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-center mb-12"
+              >
+                <h3 className="text-white text-xl md:text-2xl font-serif font-medium tracking-tight">
+                  blur out the noise, predict with knowledge.
+                </h3>
+              </motion.div>
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="w-full max-w-[340px] group-hover:-translate-y-4 transition-transform duration-300"
+              >
+                {/* Modal Container */}
+                <div className="bg-[#1a2332]/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden">
+                  {/* Header */}
+                  <div className="flex items-center justify-between p-4 border-b border-white/5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shrink-0">
+                        <img src="/betlist/usa.png" alt="USA Flag" className="w-full h-full object-cover" />
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-gray-500 uppercase tracking-wider">PINDEX</div>
+                        <div className="text-white text-sm font-semibold">USA Presidential Election</div>
+                      </div>
+                    </div>
+                    <button className="px-3 py-1.5 bg-white/10 hover:bg-white/15 rounded-md text-[11px] text-white font-medium transition-colors">
+                      View Nodes
+                    </button>
+                  </div>
+
+                  {/* Strategy */}
+                  <div className="p-4 border-b border-white/5">
+                    <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-2">Strategy</div>
+                    <div className="bg-white/5 rounded-lg px-3 py-2 text-white text-sm flex items-center justify-between">
+                      <span>Trading</span>
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Chain Dependency */}
+                  <div className="p-4 border-b border-white/5">
+                    <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-4">Chain Dependency</div>
+                    <div className="bg-white/5 rounded-lg p-4">
+                      {/* Nodes visualization */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="w-10 h-10 rounded-full bg-[#1a2332] border border-white/20 overflow-hidden flex items-center justify-center shrink-0">
+                          <img src="/featurelist/trumpwin.webp" alt="Trump Win" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 h-px bg-gradient-to-r from-white/20 via-white/40 to-white/20 mx-4" />
+                        <div className="w-10 h-10 rounded-full bg-[#1a2332] border border-white/20 overflow-hidden flex items-center justify-center shrink-0">
+                          <img src="/featurelist/trumpflorida.jpeg" alt="Trump Florida" className="w-full h-full object-cover" />
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-[10px]">
+                        <div className="text-center">
+                          <div className="text-gray-500 uppercase">Source</div>
+                          <div className="text-white">Trump Win Election</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-gray-500 uppercase">Target</div>
+                          <div className="text-white">Trump takes Florida</div>
+                        </div>
+                      </div>
+                      <div className="mt-3 text-[11px] text-gray-400 text-center">
+                        Florida's probability curve acts as a high-confidence lead indicator.
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Position */}
+                  <div className="px-4 py-3 flex items-center justify-between border-b border-white/5">
+                    <span className="text-gray-400 text-sm">Your position</span>
+                    <span className="text-[#6fd1b0] font-semibold text-sm">Yes</span>
+                  </div>
+
+                  {/* Recommendation */}
+                  <div className="p-4">
+                    <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-2">Recommendation</div>
+                    <div className="bg-white/5 rounded-lg p-4 border border-white/5">
+                      <div className="text-white font-semibold mb-2">Accept</div>
+                      <div className="text-gray-400 text-xs leading-relaxed">
+                        Institutional volume in Florida has reached critical mass. Probability drift suggests a <span className="text-[#6fd1b0]">4.2% alpha opportunity</span>.
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="px-4 py-2 border-t border-white/5 flex items-center justify-between">
+                    <span className="text-[10px] text-gray-600">Drag header to move | ESC to close</span>
+                    <span className="text-[10px] text-gray-500 font-semibold tracking-wider">PINDEX</span>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Top Right: Container 2 - Enhanced Recommendation UI */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-[#1a2332]/80 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden h-[550px]"
+          >
+            {/* Background Golden Chart (replica of BalanceCard) */}
+            <div className="absolute inset-0 opacity-10">
+              <svg className="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="balanceChartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#e8b923" stopOpacity="0.3" />
+                    <stop offset="50%" stopColor="#d4a520" stopOpacity="0.15" />
+                    <stop offset="100%" stopColor="#c4941a" stopOpacity="0.05" />
+                  </linearGradient>
+                  {/* Peak Glow Filter */}
+                  <filter id="peakGlow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                    <feMerge>
+                      <feMergeNode in="coloredBlur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+                
+                {/* Dotted vertical lines for each day */}
+                <line x1="57" y1="0" x2="57" y2="200" stroke="#374151" strokeWidth="0.5" strokeDasharray="2,4" opacity="0.3" />
+                <line x1="114" y1="0" x2="114" y2="200" stroke="#374151" strokeWidth="0.5" strokeDasharray="2,4" opacity="0.3" />
+                <line x1="171" y1="0" x2="171" y2="200" stroke="#374151" strokeWidth="0.5" strokeDasharray="2,4" opacity="0.3" />
+                <line x1="228" y1="0" x2="228" y2="200" stroke="#374151" strokeWidth="0.5" strokeDasharray="2,4" opacity="0.3" />
+                <line x1="285" y1="0" x2="285" y2="200" stroke="#374151" strokeWidth="0.5" strokeDasharray="2,4" opacity="0.3" />
+                <line x1="342" y1="0" x2="342" y2="200" stroke="#374151" strokeWidth="0.5" strokeDasharray="2,4" opacity="0.3" />
+                
+                {/* Chart fill - scaled to fit */}
+                <path
+                  d="M0,156 L15,164 L25,150 L35,176 L45,144 L55,160 L65,136 L75,110 L85,84 L95,70 L105,56 L115,76 L125,104 L135,90 L145,120 L155,96 L165,70 L175,44 L185,36 L195,64 L205,96 L215,84 L225,110 L235,76 L245,100 L255,84 L265,70 L275,56 L285,44 L295,36 L305,50 L315,64 L325,56 L335,44 L345,36 L355,50 L365,40 L375,30 L385,24 L400,20 L400,200 L0,200 Z"
+                  fill="url(#balanceChartGradient)"
+                />
+                
+                {/* Chart line - golden color */}
+                <path
+                  d="M0,156 L15,164 L25,150 L35,176 L45,144 L55,160 L65,136 L75,110 L85,84 L95,70 L105,56 L115,76 L125,104 L135,90 L145,120 L155,96 L165,70 L175,44 L185,36 L195,64 L205,96 L215,84 L225,110 L235,76 L245,100 L255,84 L265,70 L275,56 L285,44 L295,36 L305,50 L315,64 L325,56 L335,44 L345,36 L355,50 L365,40 L375,30 L385,24 L400,20"
+                  fill="none"
+                  stroke="#e8b923"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="miter"
+                  opacity="0.4"
+                />
+
+                {/* Peak Glows */}
+                <circle cx="105" cy="56" r="3" fill="#e8b923" filter="url(#peakGlow)" opacity="0.6" />
+                <circle cx="185" cy="36" r="3" fill="#e8b923" filter="url(#peakGlow)" opacity="0.6" />
+                <circle cx="295" cy="36" r="3" fill="#e8b923" filter="url(#peakGlow)" opacity="0.6" />
+                <circle cx="400" cy="20" r="3" fill="#e8b923" filter="url(#peakGlow)" opacity="0.6" />
+              </svg>
+            </div>
+
+            {/* Aurora Gradient Effect - Top Right */}
+            <div className="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none">
+              
+            </div>
+
+            {/* Floating Content Container */}
+            <div className="relative h-full w-full z-10 flex flex-col items-start">
+              {/* Extra spotlight effect */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
+
+             
+
+              {/* Main Recommendation Card - Top (Bigger) */}
+              <motion.div
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="relative bg-[#1a2332]/95 backdrop-blur-2xl rounded-2xl p-6 border border-white/10 hover:border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.6)] w-[60%] mb-6 group transition-all duration-300"
+              >
+                
+                <h4 className="text-white font-serif font-bold text-2xl mb-4">Accept</h4>
+                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
+                SpaceX-linked Bitcoin activity has historically coincided with BTC volatility spikes. Cross-asset momentum suggests a <span className="text-[#6fd1b0]">4.2% alpha opportunity</span>                </p>
+                
+                <div className="flex gap-3">
+                  <button className="flex-1 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-bold uppercase tracking-wider hover:bg-emerald-500/20 transition-all">
+                    Accept
+                  </button>
+                  <button className="flex-1 py-3 rounded-xl bg-gray-500/10 border border-white/5 text-gray-400 text-sm font-bold uppercase tracking-wider hover:bg-white/5 transition-all">
+                    Reject
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Supporting Secondary Card - Bottom (Smaller) */}
+              <MarketCard
+                  title="SpaceX Starship Launch - Will the next mission succeed?"
+                  percentage={7}
+                  volume="$847k"
+                  zIndex={10}
+                  offsetY={250}
+                  offsetX={-150}
+                  glowColor="#6fd1b0"
+                  hoverBorderOpacity="30"
+                  showGlow={false}
+                />
+                <MarketCard
+                  title="Bitcoin Price Prediction - Will BTC exceed $200k by end of year?"
+                  percentage={56}
+                  volume="$1.7m"
+                  zIndex={10}
+                  offsetY={180}
+                  offsetX={10}
+                  glowColor="#6fd1b0"
+                  hoverBorderOpacity="30"
+                  showGlow={false}
+                />
+
+              <div className="absolute bottom-0 left-0 max-w-[240px]">
+                <h3 className="text-xl font-serif  text-white leading-tight">
+                  link correlations, <br />
+                  play with less risk.
+                </h3>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Bottom: Stacked Floating Cards Container (spans full width) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="bg-[#1a2332]/80 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden md:col-span-2"
+          >
           {/* Floating particle effects behind cards */}
           <div className="absolute inset-0 -z-10 overflow-visible">
             {[...Array(6)].map((_, i) => (
@@ -133,41 +628,46 @@ export function FeaturesSection() {
             ))}
           </div>
 
-          <FeatureCard 
-            title="Diversified Portfolios"
-            color="#6fd1b0"
-            delay={0.1}
-            icon={
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h2a2 2 0 002-2V9a2 2 0 00-2-2h-2a2 2 0 00-2 2v10z" />
-              </svg>
-            }
-            description="Build balanced portfolios across multiple markets, reducing risk and maximizing potential returns."
-          />
+            {/* Staircase Stacked Cards Container - Top Right */}
+            <div className="relative min-h-[500px] flex items-start justify-end pr-8 pt-8">
+              <div className="relative" style={{ width: '380px', height: '450px' }}>
+                {/* Bottom Card - Bottom left of staircase */}
+                <MarketCard
+                  title=" Starship Launch - Will the next mission succeed?"
+                  percentage={7}
+                  volume="$847k"
+                  zIndex={10}
+                  offsetY={120}
+                  offsetX={-80}
+                  glowColor="#6fd1b0"
+                />
 
-          <FeatureCard 
-            title="AI-Powered Insights"
-            color="#ba96e3"
-            delay={0.2}
-            icon={
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            }
-            description="Leverage advanced algorithms to identify the best opportunities and optimize your betting strategy."
-          />
+                {/* Middle Card - Middle of staircase */}
+                <MarketCard
+                  title="Bitcoin Price Prediction - Will BTC exceed $200k by end of year?"
+                  percentage={23}
+                  volume="$1.5m"
+                  frequency="Monthly"
+                  zIndex={20}
+                  offsetY={60}
+                  offsetX={-40}
+                  glowColor="#ba96e3"
+                />
 
-          <FeatureCard 
-            title="Real-Time Tracking"
-            color="#6fd1b0"
-            delay={0.3}
-            icon={
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            }
-            description="Monitor your positions and portfolio performance in real-time with intuitive visualizations."
-          />
+                {/* Top Card - Top right of staircase */}
+                <MarketCard
+                  title="US Election 2028 Winner - Will Trump win the presidency?"
+                  percentage={58}
+                  volume="$2.1m"
+                  frequency="Daily"
+                  zIndex={30}
+                  offsetY={0}
+                  offsetX={0}
+                  glowColor="#6fd1b0"
+                />
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         {/* Bottom CTA for Section */}

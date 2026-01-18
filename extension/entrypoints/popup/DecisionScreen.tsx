@@ -55,27 +55,14 @@ export default function DecisionScreen({ eventTitle, userSelection, profileImage
       .attr('height', height)
       .attr('style', 'background: transparent; overflow: visible;');
 
-    // Create a group for zoom/pan
+    // Create a group for rendering (no zoom/pan)
     const g = svg.append('g');
 
-    // Add zoom behavior
-    const zoom = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.1, 4])
-      .on('zoom', (event) => {
-        g.attr('transform', event.transform);
-      });
-
-    svg.call(zoom);
-
-    // Create copies of data for D3 simulation
+    // Create copies of data for D3 (no simulation needed - fixed positions)
     const nodes = miniGraphNodes.map(d => ({ ...d }));
     const links = [{ source: nodes[0], target: nodes[1] }];
 
-    // Create force simulation (key to making pan/drag work together)
     const nodeRadius = 18;
-    const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).distance(200))
-      .alphaDecay(0.05);
 
     // Draw link
     const link = g.append('g')
@@ -86,28 +73,12 @@ export default function DecisionScreen({ eventTitle, userSelection, profileImage
       .attr('stroke-opacity', 0.5)
       .attr('stroke-width', 1);
 
-    // Draw nodes (identical to VisualizationScreen)
+    // Draw nodes (stationary - no drag)
     const node = g.append('g')
       .selectAll('g')
       .data(nodes)
       .join('g')
-      .style('cursor', 'grab')
-      .call(d3.drag<any, any>()
-        .on('start', (event, d: any) => {
-          if (!event.active) simulation.alphaTarget(0.3).restart();
-          d.fx = d.x;
-          d.fy = d.y;
-        })
-        .on('drag', (event, d: any) => {
-          d.fx = event.x;
-          d.fy = event.y;
-        })
-        .on('end', (event, d: any) => {
-          if (!event.active) simulation.alphaTarget(0);
-          d.fx = null;
-          d.fy = null;
-        })
-      );
+      .style('cursor', 'default');
 
     // Add circles to nodes
     node.append('circle')
@@ -145,21 +116,14 @@ export default function DecisionScreen({ eventTitle, userSelection, profileImage
         tooltip.style('opacity', '0');
       });
 
-    // Update positions on each tick (this is what makes everything work!)
-    simulation.on('tick', () => {
-      link
-        .attr('x1', (d: any) => d.source.x)
-        .attr('y1', (d: any) => d.source.y)
-        .attr('x2', (d: any) => d.target.x)
-        .attr('y2', (d: any) => d.target.y);
+    // Set fixed positions (no simulation needed)
+    link
+      .attr('x1', (d: any) => d.source.x)
+      .attr('y1', (d: any) => d.source.y)
+      .attr('x2', (d: any) => d.target.x)
+      .attr('y2', (d: any) => d.target.y);
 
-      node.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
-    });
-
-    // Cleanup
-    return () => {
-      simulation.stop();
-    };
+    node.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
   }, []);
 
   return (
