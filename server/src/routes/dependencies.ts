@@ -183,8 +183,12 @@ dependenciesRouter.post('/', async (c: Context) => {
       const rootProbability = clampProbability(sourcePercentages.yes / 100);
 
       logger('log', 'Finding related bets');
+      const desiredDependants = 4;
+      const candidateLimit = Math.max(desiredDependants, 12);
       const relatedBets: FoundRelatedBet[] = [];
-      for await (const bet of findRelatedBets(sourceMarket, visitedSlugs, c, logger)) {
+      for await (const bet of findRelatedBets(sourceMarket, visitedSlugs, c, logger, {
+        maxResults: candidateLimit,
+      })) {
         relatedBets.push(bet);
         logger('log', 'related-bet-found', {
           marketId: bet.marketId,
@@ -240,7 +244,17 @@ dependenciesRouter.post('/', async (c: Context) => {
 
       const metaById = new Map(dependantMeta.map(dep => [dep.id, dep]));
 
-      const dependants = pricing.dependants.map(dep => {
+      const nonZeroDependants = pricing.dependants.filter(dep => dep.weight > 0);
+      if (nonZeroDependants.length < pricing.dependants.length) {
+        warnings.push('zero_weight_filtered:Removed zero-weight dependants.');
+      }
+
+      const finalDependants = nonZeroDependants.slice(0, desiredDependants);
+      if (finalDependants.length < Math.min(desiredDependants, pricing.dependants.length)) {
+        warnings.push('insufficient_nonzero_dependants:Not enough non-zero dependants found.');
+      }
+
+      const dependants = finalDependants.map(dep => {
         const meta = metaById.get(dep.id);
         return {
           id: dep.id,

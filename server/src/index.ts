@@ -5,8 +5,18 @@ import { healthRouter } from './routes/health';
 import { relationsRouter } from './routes/relations';
 import { relatedBetsRouter } from './routes/related-bets';
 import { dependenciesRouter } from './routes/dependencies';
+import type { Context } from 'hono';
 
 const app = new Hono();
+
+// Validate required environment variables on startup
+app.use('*', async (c: Context, next) => {
+  if (!c.env.OPENAI_API_KEY) {
+    console.error('❌ OPENAI_API_KEY environment variable is not set');
+    return c.json({ error: 'Server misconfiguration: api key not set' }, 500);
+  }
+  await next();
+});
 
 app.use('/*', cors());
 

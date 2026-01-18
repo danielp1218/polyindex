@@ -6,9 +6,13 @@ import { logMessage, type Logger } from './logger';
 const CLOB_API = 'https://clob.polymarket.com';
 const GAMMA_API = 'https://gamma-api.polymarket.com';
 
-export async function fetchMarkets(logger?: Logger): Promise<PolymarketMarket[]> {
+export async function fetchMarkets(
+  logger?: Logger,
+  limit: number = 1000
+): Promise<PolymarketMarket[]> {
   // Use Gamma API for active/current markets (much better than CLOB)
-  const response = await fetch(`${GAMMA_API}/markets?limit=1000&closed=false`);
+  const safeLimit = Math.max(1, Math.min(1000, Math.floor(limit)));
+  const response = await fetch(`${GAMMA_API}/markets?limit=${safeLimit}&closed=false`);
   if (!response.ok) {
     throw new Error(`Failed to fetch markets: ${response.statusText}`);
   }

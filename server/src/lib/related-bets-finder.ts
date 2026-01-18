@@ -16,6 +16,87 @@ const openai = (c: Context) => {
   });
 }
 
+const KEYWORD_STOPWORDS = new Set([
+  'will',
+  'the',
+  'and',
+  'or',
+  'for',
+  'in',
+  'on',
+  'at',
+  'to',
+  'by',
+  'before',
+  'after',
+  'over',
+  'under',
+  'win',
+  'lose',
+  'yes',
+  'no',
+  'market',
+  'election',
+]);
+
+function extractKeywordCandidates(question: string): string[] {
+  const cleaned = question.replace(/[^a-zA-Z0-9$ ]+/g, ' ');
+  const rawTokens = cleaned.split(/\s+/).filter(Boolean);
+  const tokens: string[] = [];
+  const seen = new Set<string>();
+
+  for (const token of rawTokens) {
+    const normalized = token.replace(/^\$+/, '');
+    const lower = normalized.toLowerCase();
+    if (!normalized) {
+      continue;
+    }
+    if (KEYWORD_STOPWORDS.has(lower)) {
+      continue;
+    }
+    const isYear = /^\d{4}$/.test(lower);
+    const hasNumber = /\d/.test(lower);
+    if (!isYear && !hasNumber && lower.length < 3) {
+      continue;
+    }
+    if (seen.has(lower)) {
+      continue;
+    }
+    seen.add(lower);
+    tokens.push(normalized);
+  }
+
+  return tokens.slice(0, 4);
+}
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  limit: number,
+  worker: (item: T, index: number) => Promise<R>
+): Promise<R[]> {
+  if (items.length === 0) {
+    return [];
+  }
+
+  const results: R[] = new Array(items.length);
+  const safeLimit = Math.max(1, Math.min(limit, items.length));
+  let nextIndex = 0;
+
+  const runners = Array.from({ length: safeLimit }, async () => {
+    while (true) {
+      const currentIndex = nextIndex;
+      nextIndex += 1;
+      if (currentIndex >= items.length) {
+        return;
+      }
+      results[currentIndex] = await worker(items[currentIndex], currentIndex);
+    }
+  });
+
+  await Promise.all(runners);
+  return results;
+}
+
 /**
  * Generate search keywords from a market using LLM
  */
@@ -24,6 +105,16 @@ async function generateSearchKeywords(
   c: Context,
   logger?: Logger
 ): Promise<string[]> {
+  const extracted = extractKeywordCandidates(market.question);
+  if (extracted.length >= 2) {
+    logMessage(
+      logger,
+      'log',
+      `Using heuristic keywords for "${market.question}": ${extracted.join(', ')}`
+    );
+    return extracted;
+  }
+
   try {
     const completion = await openai(c).chat.completions.create({
       model: 'gpt-4o-mini',
@@ -75,12 +166,8 @@ Return JSON array of 2-4 short keywords:
     return keywords;
   } catch (error) {
     logMessage(logger, 'error', 'Error generating keywords', error);
-    // Fallback: extract key terms from question
-    const words = market.question
-      .split(' ')
-      .filter(w => w.length > 3 && !/^(will|the|and|or|for|in|on|at|to|by|win|lose)$/i.test(w))
-      .slice(0, 3);
-    return words;
+    const fallback = extracted.length > 0 ? extracted : ['market'];
+    return fallback;
   }
 }
 
@@ -316,11 +403,17 @@ export async function* findRelatedBets(
   sourceMarket: PolymarketMarket,
   visitedSlugs: string[] = [],
   c: Context,
-  logger?: Logger
+  logger?: Logger,
+  options: { maxResults?: number; minResults?: number } = {}
 ): AsyncGenerator<FoundRelatedBet> {
-  const MAX_RESULTS = 4; // Maximum number of related bets to return
-  const MIN_RESULTS = 3; // Minimum target - keep searching until we reach this
+  const requestedMax = options.maxResults ?? 4;
+  const requestedMin = options.minResults ?? 3;
+  const MAX_RESULTS = Math.max(1, Math.floor(requestedMax)); // Maximum number of related bets to return
+  const MIN_RESULTS = Math.max(0, Math.min(MAX_RESULTS, Math.floor(requestedMin))); // Minimum target
   let foundCount = 0;
+  const SEARCH_CONCURRENCY = 3;
+  const EVENT_MARKETS_CONCURRENCY = 4;
+  const LLM_BATCH_CONCURRENCY = 2;
 
   // New workflow: Generate keywords → Search events → LLM selects events → Fetch markets
   let eventMarkets: any[] = [];
@@ -334,16 +427,22 @@ export async function* findRelatedBets(
     // Step 2: Search for events using each keyword individually and combine results
     const allEvents: PolymarketEvent[] = [];
     const seenEventSlugs = new Set<string>();
-    
-    for (const keyword of keywords) {
-      const keywordEvents = await searchEventsByKeywords(keyword, logger);
-      logMessage(
-        logger,
-        'log',
-        `Found ${keywordEvents.length} events for keyword "${keyword}"`
-      );
-      
-      // Deduplicate by slug
+
+    const keywordResults = await mapWithConcurrency(
+      keywords,
+      SEARCH_CONCURRENCY,
+      async (keyword) => {
+        const keywordEvents = await searchEventsByKeywords(keyword, logger);
+        logMessage(
+          logger,
+          'log',
+          `Found ${keywordEvents.length} events for keyword "${keyword}"`
+        );
+        return keywordEvents;
+      }
+    );
+
+    for (const keywordEvents of keywordResults) {
       for (const event of keywordEvents) {
         if (!seenEventSlugs.has(event.slug)) {
           seenEventSlugs.add(event.slug);
@@ -388,11 +487,16 @@ export async function* findRelatedBets(
       );
       
       // Step 5: Fetch markets from selected events and tag with event slug
-      for (const slug of selectedSlugs) {
-        const markets = await fetchEventMarkets(slug, logger);
-        // Tag each market with its event slug for URL construction
-        const taggedMarkets = markets.map(m => ({ ...m, _eventSlug: slug }));
-        eventMarkets.push(...taggedMarkets);
+      const eventMarketGroups = await mapWithConcurrency(
+        selectedSlugs,
+        EVENT_MARKETS_CONCURRENCY,
+        async (slug) => {
+          const markets = await fetchEventMarkets(slug, logger);
+          return markets.map(m => ({ ...m, _eventSlug: slug }));
+        }
+      );
+      for (const markets of eventMarketGroups) {
+        eventMarkets.push(...markets);
       }
       logMessage(
         logger,
@@ -405,15 +509,19 @@ export async function* findRelatedBets(
     // Continue with empty eventMarkets on error
   }
 
-  // Always fetch general markets if we have fewer than 20 event markets to ensure enough candidates
+  // Fetch general markets only if event markets are insufficient to reach candidate target
   let allMarkets: any[] = [];
-  
-  if (eventMarkets.length < 20) {
-    allMarkets = await fetchMarkets(logger);
+  const MIN_CANDIDATES = 50;
+  const GENERAL_MARKET_LIMIT = 200;
+
+  if (eventMarkets.length < MIN_CANDIDATES) {
+    const desired = Math.max(100, MIN_CANDIDATES - eventMarkets.length);
+    const limit = Math.min(GENERAL_MARKET_LIMIT, desired);
+    allMarkets = await fetchMarkets(logger, limit);
     logMessage(
       logger,
       'log',
-      `Fetched ${allMarkets.length} general markets to supplement ${eventMarkets.length} event markets`
+      `Fetched ${allMarkets.length} general markets (limit ${limit}) to supplement ${eventMarkets.length} event markets`
     );
   } else {
     logMessage(
@@ -504,28 +612,21 @@ IMPORTANT:
 
   // Process in batches - stop early when we have enough results
   const batchSize = 10; // Smaller batches for faster initial results
+  const validRelationships: BetRelationship[] = [
+    'IMPLIES',
+    'CONTRADICTS',
+    'PARTITION_OF',
+    'SUBEVENT',
+    'CONDITIONED_ON',
+    'WEAK_SIGNAL',
+  ];
+
+  const batches: Array<{ start: number; items: any[] }> = [];
   for (let i = 0; i < candidateMarkets.length; i += batchSize) {
-    // Early exit only if we've found at least MIN_RESULTS AND reached MAX_RESULTS
-    if (foundCount >= MAX_RESULTS) {
-      logMessage(
-        logger,
-        'log',
-        `Reached maximum of ${MAX_RESULTS} related bets - stopping search`
-      );
-      break;
-    }
-    
-    // Log progress if we haven't reached minimum yet
-    if (foundCount < MIN_RESULTS) {
-      logMessage(
-        logger,
-        'log',
-        `Found ${foundCount}/${MIN_RESULTS} (minimum) related bets so far, continuing search...`
-      );
-    }
+    batches.push({ start: i, items: candidateMarkets.slice(i, i + batchSize) });
+  }
 
-    const batch = candidateMarkets.slice(i, i + batchSize);
-
+  const processBatch = async (batch: any[], startIndex: number): Promise<FoundRelatedBet[]> => {
     const batchContext = batch.map((m) => {
       const marketId = m.conditionId || m.condition_id || m.id;
       const percentages = getMarketPercentages(m, c, logger);
@@ -547,42 +648,32 @@ Description: ${m.description?.substring(0, 150)}...`;
       });
 
       const content = completion.choices[0].message.content;
-      if (!content) continue;
+      if (!content) {
+        return [];
+      }
 
       const result = JSON.parse(content);
       const relatedBets = result.related || [];
 
-      // Yield each found related bet
+      const output: FoundRelatedBet[] = [];
+
       for (const bet of relatedBets) {
-        // Find the actual market
         const market = batch.find(m => {
           const marketId = m.conditionId || m.condition_id || m.id;
           return marketId === bet.marketId;
         });
 
-        if (!market) continue;
-
-        const marketId = market.conditionId || market.condition_id || market.id;
-
-        // Skip if already seen
-        if (seenMarketIds.has(marketId)) {
+        if (!market) {
           continue;
         }
 
-        seenMarketIds.add(marketId);
-
-        // Validate relationship type
-        const validRelationships: BetRelationship[] = [
-          'IMPLIES', 'CONTRADICTS', 'PARTITION_OF', 'SUBEVENT', 'CONDITIONED_ON', 'WEAK_SIGNAL'
-        ];
+        const marketId = market.conditionId || market.condition_id || market.id;
         const relationship = validRelationships.includes(bet.relationship)
           ? bet.relationship
           : 'WEAK_SIGNAL';
-
-        // Get percentages
         const percentages = getMarketPercentages(market, c, logger);
 
-        yield {
+        output.push({
           marketId,
           market: {
             id: marketId,
@@ -595,16 +686,58 @@ Description: ${m.description?.substring(0, 150)}...`;
             volume: market.volume,
             liquidity: market.liquidity,
           },
-          eventSlug: (market as any)._eventSlug, // Get event slug if available
+          eventSlug: (market as any)._eventSlug,
           relationship: relationship as BetRelationship,
           reasoning: bet.reasoning || 'Related market',
           yesPercentage: percentages.yes,
           noPercentage: percentages.no,
-        };
+        });
+      }
 
+      return output;
+    } catch (error) {
+      logMessage(
+        logger,
+        'error',
+        `Error processing batch ${startIndex}-${startIndex + batch.length}`,
+        error
+      );
+      return [];
+    }
+  };
+
+  for (let i = 0; i < batches.length; i += LLM_BATCH_CONCURRENCY) {
+    if (foundCount >= MAX_RESULTS) {
+      logMessage(
+        logger,
+        'log',
+        `Reached maximum of ${MAX_RESULTS} related bets - stopping search`
+      );
+      break;
+    }
+
+    if (foundCount < MIN_RESULTS) {
+      logMessage(
+        logger,
+        'log',
+        `Found ${foundCount}/${MIN_RESULTS} (minimum) related bets so far, continuing search...`
+      );
+    }
+
+    const group = batches.slice(i, i + LLM_BATCH_CONCURRENCY);
+    const groupResults = await Promise.all(
+      group.map(batch => processBatch(batch.items, batch.start))
+    );
+
+    for (const batchResults of groupResults) {
+      for (const bet of batchResults) {
+        if (seenMarketIds.has(bet.marketId)) {
+          continue;
+        }
+        seenMarketIds.add(bet.marketId);
+        yield bet;
         foundCount++;
 
-        // Stop if we've found enough
         if (foundCount >= MAX_RESULTS) {
           logMessage(
             logger,
@@ -614,14 +747,6 @@ Description: ${m.description?.substring(0, 150)}...`;
           return;
         }
       }
-    } catch (error) {
-      logMessage(
-        logger,
-        'error',
-        `Error processing batch ${i}-${i + batchSize}`,
-        error
-      );
-      // Continue with next batch even if this one fails
     }
   }
 }
