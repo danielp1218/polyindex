@@ -199,8 +199,7 @@ export default function DecisionScreen({
       }
     });
 
-    // Add hover tooltip events
-    const tooltip = d3.select(tooltipRef.current);
+    // Add hover tooltip events (reuse tooltip from above)
     node
       .on('mouseenter', (event: MouseEvent, d: any) => {
         tooltip
@@ -440,16 +439,16 @@ export default function DecisionScreen({
               step={1}
               value={riskLevel}
               onChange={(e) => setRiskLevel(Number(e.target.value))}
-              style={{
+                style={{
                 flex: 1,
-                cursor: 'pointer',
+                    cursor: 'pointer',
                 accentColor: '#38bdf8',
               }}
             />
             <span style={{ fontSize: '11px', fontWeight: 600, minWidth: '32px', textAlign: 'right' }}>
               {Math.round(riskLevel)}
             </span>
-          </div>
+                  </div>
         </div>
 
         {/* Chain Dependency - Mini Graph (matching VisualizationScreen style) */}
@@ -464,10 +463,10 @@ export default function DecisionScreen({
           }}>Chain Dependency</div>
           <div style={{
           background: 'transparent',
-          borderRadius: '8px',
-          border: '1px solid #334155',
-          padding: '12px',
-        }}>
+            borderRadius: '8px',
+            border: '1px solid #334155',
+            padding: '12px',
+          }}>
             {/* Mini graph visualization - D3 controlled with pan/zoom/drag */}
             <div style={{ position: 'relative' }}>
               <svg ref={svgRef} style={{ overflow: 'visible' }}></svg>
@@ -478,7 +477,7 @@ export default function DecisionScreen({
                   background: 'rgba(15, 23, 42, 0.95)',
                   color: '#94a3b8',
                   padding: '6px 10px',
-                  borderRadius: '6px',
+                borderRadius: '6px',
                   fontSize: '11px',
                   fontWeight: 500,
                   pointerEvents: 'none',
@@ -489,12 +488,12 @@ export default function DecisionScreen({
                   zIndex: 10,
                 }}
               />
-            </div>
+              </div>
             
             {/* Labels below graph */}
             {miniGraphData && (
               <>
-                <div style={{
+              <div style={{
                   display: 'flex',
                   justifyContent: miniGraphData.sourceLabel ? 'space-between' : 'center',
                   marginTop: '8px',
@@ -510,8 +509,8 @@ export default function DecisionScreen({
                   <div style={{ textAlign: 'center', flex: 1 }}>
                     <div style={{ fontSize: '8px', color: '#64748b', textTransform: 'uppercase', marginBottom: '2px' }}>Target</div>
                     <div style={{ fontSize: '10px', fontWeight: 500, color: '#e2e8f0' }}>{miniGraphData.targetLabel}</div>
-                  </div>
-                </div>
+              </div>
+            </div>
 
                 {miniGraphData.links[0]?.relationship && (
                   <div style={{
@@ -595,8 +594,8 @@ export default function DecisionScreen({
             transition={{ duration: 0.25, ease: 'easeOut' }}
             style={{
               padding: '12px 14px',
-              background: '#1e293b',
-              borderRadius: '8px',
+            background: '#1e293b',
+            borderRadius: '8px',
               border: '1px solid rgba(255, 255, 255, 0.12)',
               boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
             }}
@@ -641,7 +640,7 @@ export default function DecisionScreen({
                   {deltaRows.map((row) => (
                     <div
                       key={row.label}
-                      style={{
+              style={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         fontSize: '11px',
@@ -652,11 +651,11 @@ export default function DecisionScreen({
                       <span style={{ color: getDeltaColor(row.value), fontWeight: 600 }}>
                         {row.display}
                       </span>
-                    </div>
+          </div>
                   ))}
-                </div>
+        </div>
                 {globalsBaseline && globalsCandidate && (
-                  <div style={{ 
+              <div style={{
                     marginTop: '8px', 
                     paddingTop: '8px', 
                     borderTop: '1px solid rgba(51, 65, 85, 0.3)',
@@ -682,7 +681,7 @@ export default function DecisionScreen({
               </p>
             )}
           </motion.div>
-        </div>
+              </div>
 
         {/* Action Buttons */}
         <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', paddingTop: '12px' }}>

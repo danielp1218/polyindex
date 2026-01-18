@@ -84,6 +84,8 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   const [backHover, setBackHover] = useState(false);
   const [addHover, setAddHover] = useState(false);
   const [addBtnHover, setAddBtnHover] = useState(false);
+  const [startHover, setStartHover] = useState(false);
+  const [notNowHover, setNotNowHover] = useState(false);
 
   const [relationGraph, setRelationGraph] = useState<RelationGraphNode | null>(null);
   const [dependencyQueue, setDependencyQueue] = useState<DependencyQueueItem[]>([]);
@@ -1262,7 +1264,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
             style={{
               flex: 1,
               cursor: 'pointer',
-              accentColor: '#38bdf8',
+              accentColor: '#5a7a94',
             }}
           />
           <span style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8f0', minWidth: '32px', textAlign: 'right' }}>
@@ -2068,33 +2070,40 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
                 }}>
                   <button
                     onClick={handleStart}
+                    onMouseEnter={() => setStartHover(true)}
+                    onMouseLeave={() => setStartHover(false)}
                     style={{
-                      padding: '14px 24px',
-                      borderRadius: '12px',
-                      border: 'none',
-                      background: 'linear-gradient(180deg, #3b82f6 0%, #2563eb 100%)',
-                      color: '#ffffff',
-                      fontSize: '14px',
+                      padding: '12px 20px',
+                      borderRadius: '8px',
+                      border: startHover ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.15)',
+                      background: 'linear-gradient(180deg, #4a5f73 0%, #3d4f63 100%)',
+                      color: '#e2e8f0',
+                      fontSize: '13px',
                       fontWeight: 600,
                       cursor: 'pointer',
-                      boxShadow: '0 4px 16px rgba(59, 130, 246, 0.3)',
+                      boxShadow: startHover ? '0 8px 24px rgba(70, 100, 140, 0.35)' : '0 4px 16px rgba(70, 100, 140, 0.25)',
                       transition: 'all 0.15s ease',
+                      filter: startHover ? 'brightness(1.15)' : 'brightness(1)',
                     }}
                   >
                     Start Pindex
                   </button>
                   <button
                     onClick={handleNotNow}
+                    onMouseEnter={() => setNotNowHover(true)}
+                    onMouseLeave={() => setNotNowHover(false)}
                     style={{
-                      padding: '12px 24px',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      background: 'transparent',
-                      color: '#94a3b8',
-                      fontSize: '13px',
+                      padding: '10px 20px',
+                      borderRadius: '8px',
+                      border: notNowHover ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255, 255, 255, 0.08)',
+                      background: 'linear-gradient(180deg, #3d4f63 0%, #2a3a4a 100%)',
+                      color: notNowHover ? '#e2e8f0' : '#94a3b8',
+                      fontSize: '12px',
                       fontWeight: 500,
                       cursor: 'pointer',
+                      boxShadow: notNowHover ? '0 6px 20px rgba(70, 100, 140, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.15)',
                       transition: 'all 0.15s ease',
+                      filter: notNowHover ? 'brightness(1.1)' : 'brightness(1)',
                     }}
                   >
                     Not now
