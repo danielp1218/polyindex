@@ -28,8 +28,8 @@ import {
 
 The engine models directed relationships between `root` and `related`. Direction matters.
 
-- **IMPLIES** (root ⇒ related)  
-  Constraint: `P(root) <= P(related)`
+- **IMPLIES** (related ⇒ root)  
+  Constraint: `P(related) <= P(root)`
 
 - **SUBEVENT** (root ⊆ related)  
   Constraint: `P(root) <= P(related)`
@@ -63,7 +63,9 @@ The engine models directed relationships between `root` and `related`. Direction
 
 ## Server Compact Pricing Adapter (Root + Dependants)
 
-The server exposes a compact `/api/relations/price` payload where **relation direction is always `root ⇒ dependant`**.
+The server exposes a compact `/api/relations/price` payload where direction is **relative to the root**:
+- **IMPLIES** means `dependant ⇒ root`
+- **SUBEVENT / CONDITIONED_ON / CONTRADICTS** are evaluated as `root ⇒ dependant` constraints
 
 ### Input Schema
 
@@ -80,9 +82,13 @@ The server exposes a compact `/api/relations/price` payload where **relation dir
 
 ### Target Probability Rules (Compact Mode)
 
-Each dependant is adjusted against the root (root ⇒ dependant):
+Each dependant is adjusted against the root using the relation-specific direction:
 
-- **IMPLIES / SUBEVENT / CONDITIONED_ON**  
+- **IMPLIES**  
+  Target: `min(P(dep), P(root))`  
+  (If dependant > root, buy NO on dependant.)
+
+- **SUBEVENT / CONDITIONED_ON**  
   Target: `max(P(dep), P(root))`  
   (If root > dependant, buy YES on dependant.)
 

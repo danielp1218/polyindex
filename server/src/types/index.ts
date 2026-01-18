@@ -1,16 +1,3 @@
-export interface Dependency {
-  id: string;
-  marketId: string;
-  market: PolymarketMarket;
-  createdAt: number;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  error?: string;
-  // Metadata from related bets job
-  relatedBetsJobId?: string;
-  sourceMarketId?: string;
-  relationship?: BetRelationship;
-}
-
 export interface PolymarketMarket {
   id: string;
   condition_id?: string;
@@ -24,7 +11,7 @@ export interface PolymarketMarket {
 }
 
 export type BetRelationship =
-  | 'IMPLIES'          // One outcome implies another
+  | 'IMPLIES'          // Related outcome implies source outcome
   | 'CONTRADICTS'      // Outcomes cannot both be true
   | 'PARTITION_OF'     // Part of the same larger question
   | 'SUBEVENT'         // A component event that affects the outcome
@@ -38,16 +25,4 @@ export interface RelatedBet {
   reasoning: string;
   yesPercentage: number; 
   noPercentage: number;
-}
-
-export interface RelatedBetsJob {
-  id: string;
-  sourceMarketId: string;
-  sourceMarket?: PolymarketMarket;
-  eventSlug?: string; // Event slug if source was from an event URL
-  createdAt: number;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  relatedBets: RelatedBet[];
-  error?: string;
-  processedMarketIds: string[];
 }

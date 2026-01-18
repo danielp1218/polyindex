@@ -1,64 +1,129 @@
 import { Hono } from 'hono';
-import { relatedBetsQueue } from '../core/related-bets-queue';
-import { broadcast } from '../core/sse';
+import { streamSSE } from 'hono/streaming';
 import { parseMarketInput } from '../lib/url-parser';
+import { findRelatedBets } from '../lib/related-bets-finder';
+import { fetchMarket } from '../lib/polymarket-api';
+import type { Logger, LogLevel } from '../lib/logger';
 
 export const relatedBetsRouter = new Hono();
 
+function formatLogPayload(level: LogLevel, message: string, meta?: unknown): string {
+  const payload = meta === undefined ? { level, message } : { level, message, meta };
+  return `log - ${JSON.stringify(payload)}`;
+}
+
+function formatFinalPayload(payload: unknown): string {
+  return `final - ${JSON.stringify(payload)}`;
+}
+
+function createSseLogger(stream: any): Logger {
+  return (level, message, meta) => {
+    const data = formatLogPayload(level, message, meta);
+    void stream.writeSSE({ data });
+
+    const consoleFn =
+      level === 'error' ? console.error : level === 'warn' ? console.warn : console.log;
+    if (meta !== undefined) {
+      consoleFn(message, meta);
+    } else {
+      consoleFn(message);
+    }
+  };
+}
+
 // Takes either a Polymarket URL or CLOB market ID (condition_id)
-relatedBetsRouter.post('/', async (c) => {
-  const { marketId, url } = await c.req.json<{ marketId?: string; url?: string }>();
+// Streams logs and a final response over SSE
+relatedBetsRouter.post('/', (c) => {
+  return streamSSE(c, async (stream) => {
+    const logger = createSseLogger(stream);
 
-  // Accept either marketId or url
-  const input = marketId || url;
+    let payload: {
+      marketId?: string;
+      url?: string;
+      visitedSlugs?: string[];
+    };
 
-  if (!input) {
-    return c.json({ error: 'Either marketId or url is required' }, 400);
-  }
+    try {
+      payload = await c.req.json();
+    } catch (error) {
+      logger('error', 'Invalid JSON payload', error);
+      c.status(400);
+      await stream.writeSSE({
+        data: formatFinalPayload({ error: 'Invalid JSON payload' }),
+      });
+      return;
+    }
 
-  try {
-    // Parse the input - handles both URLs and direct market IDs
-    const { marketId: resolvedMarketId, eventSlug } = await parseMarketInput(input);
+    const { marketId, url, visitedSlugs } = payload;
 
-    // Create job with event slug
-    const job = relatedBetsQueue.add(resolvedMarketId, eventSlug);
+    // Accept either marketId or url
+    const input = marketId || url;
 
-    // Broadcast to SSE clients
-    broadcast({ type: 'related-bets-job-added', job });
+    if (!input) {
+      logger('warn', 'Missing marketId or url');
+      c.status(400);
+      await stream.writeSSE({
+        data: formatFinalPayload({ error: 'Either marketId or url is required' }),
+      });
+      return;
+    }
 
-    return c.json(job);
-  } catch (error) {
-    return c.json({
-      error: error instanceof Error ? error.message : 'Failed to process market input'
-    }, 400);
-  }
-});
+    try {
+      logger('log', 'Resolving market input');
+      // Parse the input - handles both URLs and direct market IDs
+      const resolvedMarketId = await parseMarketInput(input, logger);
 
-// Get all jobs
-relatedBetsRouter.get('/', (c) => {
-  return c.json(relatedBetsQueue.getAll());
-});
+      // Fetch the source market
+      const sourceMarket = await fetchMarket(resolvedMarketId, logger);
 
-// Get specific job - minimal clean format
-relatedBetsRouter.get('/:id', (c) => {
-  const id = c.req.param('id');
-  const job = relatedBetsQueue.get(id);
+      // Find related bets (this streams results but we'll collect them all)
+      const relatedBets = [];
+      for await (const bet of findRelatedBets(sourceMarket, visitedSlugs || [], logger)) {
+        relatedBets.push(bet);
+        logger('log', 'related-bet-found', {
+          marketId: bet.marketId,
+          question: bet.market.question,
+          relationship: bet.relationship,
+        });
+      }
 
-  if (!job) {
-    return c.json({ error: 'Job not found' }, 404);
-  }
+      // Stream final results in clean format
+      await stream.writeSSE({
+        data: formatFinalPayload({
+          sourceMarket: {
+            id: sourceMarket.id,
+            question: sourceMarket.question,
+            slug: sourceMarket.market_slug,
+          },
+          relatedBets: relatedBets.map(bet => {
+            // Use event slug if available (for markets from events), otherwise market slug
+            const slug = bet.eventSlug || bet.market.market_slug;
+            const url = slug ? `https://polymarket.com/event/${slug}` : undefined;
 
-  // Ultra-minimal format: just the essentials
-  return c.json({
-    status: job.status,
-    dependencies: job.relatedBets.map(bet => ({
-      url: bet.market.market_slug
-        ? `https://polymarket.com/event/${bet.market.market_slug}`
-        : bet.marketId,
-      yesPercentage: bet.yesPercentage,
-      noPercentage: bet.noPercentage,
-      relationType: bet.relationship,
-      reason: bet.reasoning,
-    })),
+            if (!url) {
+              logger('warn', `No URL for market ${bet.marketId}: ${bet.market.question}`);
+            }
+
+            return {
+              marketId: bet.marketId,
+              question: bet.market.question,
+              slug,
+              url,
+              relationship: bet.relationship,
+              reasoning: bet.reasoning,
+              yesPercentage: bet.yesPercentage,
+              noPercentage: bet.noPercentage,
+            };
+          }),
+        }),
+      });
+    } catch (error) {
+      logger('error', 'Error finding related bets', error);
+      await stream.writeSSE({
+        data: formatFinalPayload({
+          error: error instanceof Error ? error.message : 'Failed to find related bets',
+        }),
+      });
+    }
   });
 });

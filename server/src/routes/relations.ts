@@ -3,16 +3,10 @@ import { priceRelationSet } from '../services/relation-analyzer';
 import type {
   PricingOptions,
   RelationInput,
-} from '../services/relation-analyzer';
-
-// Relation types
-type RelationType =
-  | 'IMPLIES'
-  | 'CONTRADICTS'
-  | 'PARTITION_OF'
-  | 'SUBEVENT'
-  | 'CONDITIONED_ON'
-  | 'WEAK_SIGNAL';
+  RelationType,
+} from '@polyindex/relations-engine';
+import type { GraphNodeInput } from '../services/graph-outcomes';
+import { evaluateGraph } from '../services/graph-outcomes';
 
 export const relationsRouter = new Hono();
 
@@ -36,6 +30,11 @@ interface CompactRelationsPayload {
   dependants: DependantInput[];
   options?: PricingOptions;
   volatility?: number;
+}
+
+interface GraphValidationError {
+  path: string;
+  message: string;
 }
 
 const RELATION_TYPES: RelationType[] = [
@@ -78,6 +77,62 @@ function isRelationType(value: unknown): value is RelationType {
   return typeof value === 'string' && RELATION_TYPES.includes(value as RelationType);
 }
 
+function isDecision(value: unknown): value is Decision {
+  return value === 'yes' || value === 'no';
+}
+
+function validateGraphNode(
+  node: GraphNodeInput,
+  isRoot: boolean,
+  path: string,
+  seen: Set<string>,
+  errors: GraphValidationError[]
+) {
+  if (!node || typeof node !== 'object') {
+    errors.push({ path, message: 'Node must be an object.' });
+    return;
+  }
+
+  if (!node.id || typeof node.id !== 'string') {
+    errors.push({ path, message: 'Node.id is required.' });
+  } else if (seen.has(node.id)) {
+    errors.push({ path, message: `Duplicate node id: ${node.id}.` });
+  } else {
+    seen.add(node.id);
+  }
+
+  if (!isProbability(node.probability)) {
+    errors.push({ path, message: 'Node.probability must be between 0 and 1.' });
+  }
+
+  if (!isWeight(node.weight)) {
+    errors.push({ path, message: 'Node.weight must be a positive number.' });
+  }
+
+  if (!isRoot && !isRelationType(node.relation)) {
+    errors.push({ path, message: 'Node.relation must be a valid relation type.' });
+  }
+
+  if (node.decision !== undefined && !isDecision(node.decision)) {
+    errors.push({ path, message: 'Node.decision must be \"yes\" or \"no\".' });
+  }
+
+  if (node.children !== undefined && !Array.isArray(node.children)) {
+    errors.push({ path, message: 'Node.children must be an array.' });
+    return;
+  }
+
+  for (const [index, child] of (node.children ?? []).entries()) {
+    validateGraphNode(
+      child,
+      false,
+      `${path}.children[${index}]`,
+      seen,
+      errors
+    );
+  }
+}
+
 function clampProbability(value: number): number {
   if (value < 0) {
     return 0;
@@ -95,6 +150,7 @@ function targetProbabilityForRelation(
 ): number {
   switch (relation) {
     case 'IMPLIES':
+      return Math.min(dependantProbability, rootProbability);
     case 'SUBEVENT':
     case 'CONDITIONED_ON':
       return Math.max(dependantProbability, rootProbability);
@@ -262,5 +318,20 @@ relationsRouter.post('/price', async (c) => {
   }
 
   const result = priceRelationSet(relations, options);
+  return c.json(result);
+});
+
+relationsRouter.post('/graph', async (c) => {
+  const payload = await c.req.json<GraphNodeInput>();
+  const errors: GraphValidationError[] = [];
+  const seen = new Set<string>();
+
+  validateGraphNode(payload, true, 'root', seen, errors);
+
+  if (errors.length > 0) {
+    return c.json({ error: 'Invalid graph payload', details: errors }, 400);
+  }
+
+  const result = evaluateGraph(payload);
   return c.json(result);
 });

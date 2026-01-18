@@ -1,4 +1,5 @@
 import { fetchMarkets } from './polymarket-api';
+import { logMessage, type Logger } from './logger';
 
 const GAMMA_API = 'https://gamma-api.polymarket.com';
 
@@ -25,7 +26,10 @@ export function extractSlugFromUrl(url: string): string | null {
 }
 
 // Fetches event from Gamma API by slug --> Returns the first market's condition_id if found
-async function fetchEventBySlug(slug: string): Promise<string | null> {
+async function fetchEventBySlug(
+  slug: string,
+  logger?: Logger
+): Promise<string | null> {
   try {
     const response = await fetch(`${GAMMA_API}/events?slug=${slug}`);
     if (!response.ok) {
@@ -43,13 +47,16 @@ async function fetchEventBySlug(slug: string): Promise<string | null> {
 
     return null;
   } catch (error) {
-    console.error('Error fetching event from Gamma API:', error);
+    logMessage(logger, 'error', 'Error fetching event from Gamma API', error);
     return null;
   }
 }
 
 // Fetches all markets from an event by slug --> array of markets from the event
-export async function fetchEventMarkets(slug: string): Promise<any[]> {
+export async function fetchEventMarkets(
+  slug: string,
+  logger?: Logger
+): Promise<any[]> {
   try {
     const response = await fetch(`${GAMMA_API}/events?slug=${slug}`);
     if (!response.ok) {
@@ -66,7 +73,7 @@ export async function fetchEventMarkets(slug: string): Promise<any[]> {
 
     return [];
   } catch (error) {
-    console.error('Error fetching event markets:', error);
+    logMessage(logger, 'error', 'Error fetching event markets', error);
     return [];
   }
 }
@@ -77,27 +84,46 @@ function slugToQuestion(slug: string): string {
 }
 
 // market url slug --> market's condition_id (CLOB ID)
-export async function findMarketIdFromUrl(url: string): Promise<string | null> {
+export async function findMarketIdFromUrl(
+  url: string,
+  logger?: Logger
+): Promise<string | null> {
   const slug = extractSlugFromUrl(url);
   if (!slug) {
+    logMessage(logger, 'warn', 'Failed to extract slug from URL');
     return null;
   }
 
+  logMessage(logger, 'log', `Attempting to find market for slug: ${slug}`);
+
   // First, try the Gamma API (handles events with multiple markets)
-  const eventMarketId = await fetchEventBySlug(slug);
+  const eventMarketId = await fetchEventBySlug(slug, logger);
   if (eventMarketId) {
+    logMessage(logger, 'log', `Found market via Gamma API: ${eventMarketId}`);
     return eventMarketId;
   }
 
+  logMessage(logger, 'log', 'Gamma API lookup failed, trying fallback search...');
+
   // Fall back to CLOB API for individual markets
-  const markets = await fetchMarkets();
+  const markets = await fetchMarkets(logger);
+  logMessage(logger, 'log', `Fetched ${markets.length} markets for fallback search`);
 
   // Try exact slug match
   let market = markets.find(m => m.market_slug === slug);
 
-  // If no exact match, try partial matching with question
-  if (!market) {
+  if (market) {
+    logMessage(
+      logger,
+      'log',
+      `Found exact slug match: ${market.condition_id || market.id}`
+    );
+  } else {
+    logMessage(logger, 'log', 'No exact slug match, trying fuzzy search...');
+    // If no exact match, try partial matching with question
     const searchQuery = slugToQuestion(slug);
+    logMessage(logger, 'log', `Searching for: "${searchQuery}"`);
+    
     market = markets.find(m => {
       const question = m.question?.toLowerCase() || '';
       // Check if the question contains most of the words from the slug
@@ -106,6 +132,12 @@ export async function findMarketIdFromUrl(url: string): Promise<string | null> {
       // Consider it a match if at least 60% of significant words match
       return matchedWords.length >= slugWords.length * 0.6;
     });
+    
+    if (market) {
+      logMessage(logger, 'log', `Found fuzzy match: ${market.question}`);
+    } else {
+      logMessage(logger, 'log', 'No fuzzy match found');
+    }
   }
 
   // Return condition_id if available, otherwise fall back to id
@@ -113,18 +145,25 @@ export async function findMarketIdFromUrl(url: string): Promise<string | null> {
 }
 
 // Extracts market ID from either a URL or returns the ID if already provided
-// Also returns event slug if URL is an event
-export async function parseMarketInput(input: string): Promise<{ marketId: string; eventSlug?: string }> {
+export async function parseMarketInput(
+  input: string,
+  logger?: Logger
+): Promise<string> {
   // Check if input looks like a URL
   if (input.startsWith('http://') || input.startsWith('https://')) {
+    logMessage(logger, 'log', `Parsing URL: ${input}`);
     const slug = extractSlugFromUrl(input);
-    const marketId = await findMarketIdFromUrl(input);
+    logMessage(logger, 'log', `Extracted slug: ${slug}`);
+    
+    const marketId = await findMarketIdFromUrl(input, logger);
     if (!marketId) {
-      throw new Error('Could not find market for the provided URL');
+      throw new Error(`Could not find market for the provided URL: ${input}. Slug extracted: ${slug || 'none'}`);
     }
-    return { marketId, eventSlug: slug || undefined };
+    logMessage(logger, 'log', `Resolved market ID: ${marketId}`);
+    return marketId;
   }
 
   // Otherwise assume it's already a market ID
-  return { marketId: input.trim() };
+  logMessage(logger, 'log', `Using direct market ID: ${input}`);
+  return input.trim();
 }

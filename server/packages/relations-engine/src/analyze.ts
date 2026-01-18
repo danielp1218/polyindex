@@ -97,35 +97,35 @@ function analyzeRelation(relation: RelationInput, options: AnalysisOptions): Rel
       addManualReview(
         findings,
         'manual_resolution_subset',
-        'Confirm root resolution criteria is a strict subset of related resolution criteria.'
+        'Confirm related resolution criteria is a strict subset of root resolution criteria.'
       );
       addManualReview(
         findings,
         'manual_no_alternative_paths',
         'Confirm there are no alternate resolution paths that allow related to resolve YES without root.'
       );
-      if (rootDate && relatedDate && rootDate > relatedDate) {
+      if (rootDate && relatedDate && relatedDate > rootDate) {
         addFinding(
           findings,
           'timing_contradiction',
           'error',
-          'Root cannot resolve after related for IMPLIES.'
+          'Related cannot resolve after root for IMPLIES.'
         );
       }
       if (pRoot !== undefined && pRelated !== undefined) {
-        if (pRoot > pRelated + epsilon) {
-          addFinding(findings, 'probability_incoherent', 'error', 'P(root) exceeds P(related).');
+        if (pRelated > pRoot + epsilon) {
+          addFinding(findings, 'probability_incoherent', 'error', 'P(related) exceeds P(root).');
           addGuidance(
             guidance,
             'ARBITRAGE',
-            'Incoherence detected: buy YES on related or sell YES on root.',
+            'Incoherence detected: buy YES on root or sell YES on related.',
             [relation.root.id, relation.related.id]
           );
         }
         addGuidance(
           guidance,
           'HEDGE',
-          'If long root, a partial long on related reduces variance.',
+          'If long related, a partial long on root reduces variance.',
           [relation.root.id, relation.related.id]
         );
       } else {
@@ -133,7 +133,7 @@ function analyzeRelation(relation: RelationInput, options: AnalysisOptions): Rel
           findings,
           'missing_probability',
           'warning',
-          'Both probabilities are required to check P(root) <= P(related).'
+          'Both probabilities are required to check P(related) <= P(root).'
         );
       }
       break;

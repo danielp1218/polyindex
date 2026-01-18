@@ -199,6 +199,7 @@ export function priceRelations(
   const events = new Map<string, EventState>();
 
   const impliesPairs = new Set<string>();
+  const forwardPairs = new Set<string>();
   const contradictsPairs = new Set<string>();
   const partitionGroups = new Map<string, Set<string>>();
 
@@ -206,8 +207,10 @@ export function priceRelations(
     registerEvent(events, relation.root, options, warnings);
     registerEvent(events, relation.related, options, warnings);
 
-    if (relation.relation === 'IMPLIES' || relation.relation === 'SUBEVENT' || relation.relation === 'CONDITIONED_ON') {
+    if (relation.relation === 'IMPLIES') {
       impliesPairs.add(`${relation.root.id}::${relation.related.id}`);
+    } else if (relation.relation === 'SUBEVENT' || relation.relation === 'CONDITIONED_ON') {
+      forwardPairs.add(`${relation.root.id}::${relation.related.id}`);
     } else if (relation.relation === 'CONTRADICTS') {
       contradictsPairs.add(`${relation.root.id}::${relation.related.id}`);
     } else if (relation.relation === 'PARTITION_OF') {
@@ -229,6 +232,7 @@ export function priceRelations(
   let iterations = 0;
 
   const implies = Array.from(impliesPairs).map(pair => pair.split('::'));
+  const forward = Array.from(forwardPairs).map(pair => pair.split('::'));
   const contradicts = Array.from(contradictsPairs).map(pair => pair.split('::'));
 
   for (let iter = 0; iter < maxIterations; iter += 1) {
@@ -239,6 +243,20 @@ export function priceRelations(
     }
 
     for (const [rootId, relatedId] of implies) {
+      const pRoot = getProbability(probabilities, rootId);
+      const pRelated = getProbability(probabilities, relatedId);
+      if (pRelated <= pRoot) {
+        continue;
+      }
+      const wRoot = getWeightById(events, rootId);
+      const wRelated = getWeightById(events, relatedId);
+      const combined = wRoot + wRelated;
+      const projected = (wRoot * pRoot + wRelated * pRelated) / combined;
+      updateValue(probabilities, rootId, projected, maxDelta);
+      updateValue(probabilities, relatedId, projected, maxDelta);
+    }
+
+    for (const [rootId, relatedId] of forward) {
       const pRoot = getProbability(probabilities, rootId);
       const pRelated = getProbability(probabilities, relatedId);
       if (pRoot <= pRelated) {
