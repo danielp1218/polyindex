@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -16,14 +18,14 @@
 html, body {
   margin: 0;
   padding: 0;
-  width: 420px;
-  height: 600px;
-  background: #0a0f1a;
+  min-width: 320px;
+  min-height: 200px;
+  background: linear-gradient(145deg, #0f1520 0%, #0a0e16 50%, #080c12 100%);
   overflow: hidden;
 }
 
 #root {
-  width: 420px;
-  height: 600px;
-  background: #0a0f1a;
+  min-width: 320px;
+  min-height: 200px;
+  background: transparent;
 }

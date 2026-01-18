@@ -130,9 +130,67 @@ function App() {
 
   if (!pageUrl) {
     return (
-      <div style={{ padding: '20px', minWidth: '420px', minHeight: '600px', background: '#0a0f1a', color: '#e2e8f0' }}>
-        <h2>Polyindex</h2>
-        <p>Inactive - Navigate to a Polymarket event page</p>
+      <div style={{ 
+        padding: '32px 24px', 
+        minWidth: '320px', 
+        minHeight: '200px', 
+        background: 'linear-gradient(145deg, #0f1520 0%, #0a0e16 50%, #080c12 100%)', 
+        color: '#e2e8f0',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        gap: '16px',
+        fontFamily: 'Inter, system-ui, sans-serif',
+      }}>
+        <div style={{
+          width: '48px',
+          height: '48px',
+          borderRadius: '12px',
+          background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '8px',
+        }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2">
+            <path d="M3 3v18h18" />
+            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+          </svg>
+        </div>
+        <h2 style={{ 
+          fontSize: '16px', 
+          fontWeight: 600, 
+          margin: 0,
+          color: '#f1f5f9',
+        }}>PolyIndex</h2>
+        <p style={{ 
+          fontSize: '13px', 
+          color: '#64748b', 
+          margin: 0,
+          lineHeight: 1.5,
+        }}>Navigate to a Polymarket event to get started</p>
+        <a 
+          href="https://polymarket.com" 
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            marginTop: '8px',
+            padding: '10px 20px',
+            background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.5) 100%)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '8px',
+            color: '#e2e8f0',
+            fontSize: '12px',
+            fontWeight: 500,
+            textDecoration: 'none',
+            transition: 'all 0.15s ease',
+          }}
+        >
+          Open Polymarket
+        </a>
       </div>
     );
   }

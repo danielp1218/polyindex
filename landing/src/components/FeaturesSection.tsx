@@ -127,7 +127,7 @@ export function FeaturesSection() {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#6fd1b0] to-[#ba96e3] mx-auto mb-8 rounded-full" />
           <p className="text-gray-400 text-xl md:text-2xl max-w-3xl mx-auto font-light leading-relaxed">
-            Experience the future of prediction market investing with  <br /><span className="text-white font-medium"> agentic index funds</span>.
+            Experience the future of prediction market investing with  <br /> <span className="text-white font-medium"> agentic index funds</span>.
           </p>
         </motion.div>
 
