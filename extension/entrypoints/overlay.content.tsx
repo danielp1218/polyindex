@@ -112,6 +112,9 @@ export default defineContentScript({
         // Create wrapper for React
         const wrapper = document.createElement('div');
         wrapper.id = 'pindex-overlay-root';
+        wrapper.style.position = 'absolute';
+        wrapper.style.top = '0';
+        wrapper.style.left = '0';
         wrapper.style.width = '100%';
         wrapper.style.height = '100%';
         wrapper.style.pointerEvents = 'none';

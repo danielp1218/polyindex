@@ -44,11 +44,13 @@ export function VideoLoader({ size = 400, videoPath }: VideoLoaderProps) {
     const canvas = canvasRef.current;
     if (!video || !canvas || !videoSrc) return;
 
+    let isMounted = true;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     // Set canvas size - maintain aspect ratio
     video.addEventListener('loadedmetadata', () => {
+      if (!isMounted) return;
       const aspectRatio = video.videoWidth / video.videoHeight;
       if (aspectRatio > 1) {
         // Landscape
@@ -128,6 +130,7 @@ export function VideoLoader({ size = 400, videoPath }: VideoLoaderProps) {
     let lastTime = 0;
 
     const processFrame = (currentTime: number) => {
+      if (!isMounted) return;
       // Throttle to ~30fps for performance
       if (currentTime - lastTime >= 33) {
         removeGreenScreen();
@@ -137,6 +140,7 @@ export function VideoLoader({ size = 400, videoPath }: VideoLoaderProps) {
     };
 
     const handleCanPlay = () => {
+      if (!isMounted) return;
       console.log('Video can play, starting processing');
       removeGreenScreen();
       animationFrameId = requestAnimationFrame(processFrame);
@@ -155,6 +159,8 @@ export function VideoLoader({ size = 400, videoPath }: VideoLoaderProps) {
     
     // Try to play the video
     video.play().catch(err => {
+      // Ignore AbortError - this happens when component unmounts during play()
+      if (err.name === 'AbortError') return;
       console.error('Video play error:', err);
     });
     
@@ -164,6 +170,7 @@ export function VideoLoader({ size = 400, videoPath }: VideoLoaderProps) {
     }
 
     return () => {
+      isMounted = false;
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('loadeddata', handleCanPlay);
       video.removeEventListener('error', handleError);

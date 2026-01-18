@@ -93,6 +93,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
   const [globalsDelta, setGlobalsDelta] = useState<GraphOutcomeDelta | null>(null);
   const [globalsError, setGlobalsError] = useState<string | null>(null);
   const [globalsLoading, setGlobalsLoading] = useState(false);
+  const [displayItemImage, setDisplayItemImage] = useState<string | null>(null);
 
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -168,6 +169,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
       fullLabel: targetLabel,
       x: hasSource ? 270 : 170,
       y: 55,
+      imageUrl: displayItem.imageUrl || displayItemImage,
     };
 
     if (!hasSource) {
@@ -211,7 +213,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
       reasoning: displayItem.explanation ?? '',
       sourceImageUrl: sourceNode.imageUrl,
     };
-  }, [relationGraph, displayItem]);
+  }, [relationGraph, displayItem, displayItemImage]);
 
   useEffect(() => {
     setAccepted(null);
@@ -407,6 +409,32 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
       isActive = false;
     };
   }, [currentUrl, relationGraph]);
+
+  // Fetch image for current displayItem if missing
+  useEffect(() => {
+    if (!displayItem?.url || displayItem.imageUrl) {
+      // Reset if no displayItem or already has image
+      if (!displayItem) {
+        setDisplayItemImage(null);
+      }
+      return;
+    }
+
+    let isActive = true;
+    setDisplayItemImage(null);
+
+    const fetchImage = async () => {
+      const info = await fetchEventInfoFromUrl(displayItem.url);
+      if (isActive && info?.imageUrl) {
+        setDisplayItemImage(info.imageUrl);
+      }
+    };
+
+    void fetchImage();
+    return () => {
+      isActive = false;
+    };
+  }, [displayItem?.id, displayItem?.url, displayItem?.imageUrl]);
 
   useEffect(() => {
     if (!relationGraph) {
@@ -1067,20 +1095,53 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
             <>
               <div style={{
                 display: 'flex',
-                justifyContent: miniGraphData.sourceLabel ? 'space-between' : 'center',
+                flexDirection: 'column',
+                gap: '8px',
                 marginTop: '8px',
                 paddingTop: '8px',
                 borderTop: '1px solid rgba(51, 65, 85, 0.3)',
               }}>
                 {miniGraphData.sourceLabel && (
-                  <div style={{ textAlign: 'center', flex: 1 }}>
-                    <div style={{ fontSize: '8px', color: '#64748b', textTransform: 'uppercase', marginBottom: '2px' }}>Source</div>
-                    <div style={{ fontSize: '10px', fontWeight: 500, color: '#e2e8f0' }}>{miniGraphData.sourceLabel}</div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '8px',
+                  }}>
+                    <div style={{
+                      fontSize: '8px',
+                      color: '#64748b',
+                      textTransform: 'uppercase',
+                      minWidth: '45px',
+                      paddingTop: '2px',
+                    }}>Source</div>
+                    <div style={{
+                      fontSize: '10px',
+                      fontWeight: 500,
+                      color: '#e2e8f0',
+                      flex: 1,
+                      lineHeight: 1.4,
+                    }}>{miniGraphData.sourceLabel}</div>
                   </div>
                 )}
-                <div style={{ textAlign: 'center', flex: 1 }}>
-                  <div style={{ fontSize: '8px', color: '#64748b', textTransform: 'uppercase', marginBottom: '2px' }}>Target</div>
-                  <div style={{ fontSize: '10px', fontWeight: 500, color: '#e2e8f0' }}>{miniGraphData.targetLabel}</div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '8px',
+                }}>
+                  <div style={{
+                    fontSize: '8px',
+                    color: '#64748b',
+                    textTransform: 'uppercase',
+                    minWidth: '45px',
+                    paddingTop: '2px',
+                  }}>Target</div>
+                  <div style={{
+                    fontSize: '10px',
+                    fontWeight: 500,
+                    color: '#e2e8f0',
+                    flex: 1,
+                    lineHeight: 1.4,
+                  }}>{miniGraphData.targetLabel}</div>
                 </div>
               </div>
 
@@ -1479,8 +1540,11 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           style={{
-            position: 'absolute',
-            inset: 0,
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
             background: 'rgba(0, 0, 0, 0.5)',
             backdropFilter: 'blur(4px)',
             zIndex: 99998,
