@@ -3,15 +3,6 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
-const particlePositions = [
-  { top: "8%", left: "18%" },
-  { top: "22%", left: "72%" },
-  { top: "38%", left: "44%" },
-  { top: "54%", left: "86%" },
-  { top: "68%", left: "12%" },
-  { top: "84%", left: "60%" },
-];
-
 // Prediction Market Card Component
 const MarketCard = ({ 
   image, 
