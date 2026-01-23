@@ -296,7 +296,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will NVIDIA stock reach $200 by end of 2026?',
     relation: 'IMPLIES',
     explanation: 'NVIDIA stock is the bellwether for AI bubble - major decline signals burst',
-    imageUrl: DEMO_IMAGES.largest,
+    imageUrl: DEMO_IMAGES.nvidia,
     probability: 0.45,
     yesPercentage: 45,
     noPercentage: 55,
@@ -360,7 +360,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'When will OpenAI release GPT-5?',
     relation: 'IMPLIES',
     explanation: 'GPT-5 release impacts AI leadership and market expectations',
-    imageUrl: DEMO_IMAGES.openai,
+    imageUrl: DEMO_IMAGES.gpt5,
     probability: 0.52,
     yesPercentage: 52,
     noPercentage: 48,
@@ -372,7 +372,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will Claude be ranked #1 AI model in 2026?',
     relation: 'CORRELATED',
     explanation: 'Claude rankings reflect Anthropic competitive strength',
-    imageUrl: DEMO_IMAGES.anthropic,
+    imageUrl: DEMO_IMAGES.anthropicIpo,
     probability: 0.35,
     yesPercentage: 35,
     noPercentage: 65,
@@ -448,7 +448,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: "Will AMD's market cap exceed $300B in 2026?",
     relation: 'CORRELATED',
     explanation: 'AMD valuation reflects AI chip market competition',
-    imageUrl: DEMO_IMAGES.nvidia,
+    imageUrl: DEMO_IMAGES.largest,
     probability: 0.32,
     yesPercentage: 32,
     noPercentage: 68,
@@ -460,7 +460,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will Intel return to profitability by Q4 2026?',
     relation: 'WEAK_SIGNAL',
     explanation: 'Intel recovery affects overall semiconductor market health',
-    imageUrl: DEMO_IMAGES.microsoft,
+    imageUrl: DEMO_IMAGES.acquisitions,
     probability: 0.45,
     yesPercentage: 45,
     noPercentage: 55,
@@ -484,7 +484,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will H100 rental prices drop 50% by end of 2026?',
     relation: 'CONTRADICTS',
     explanation: 'GPU rental price crash signals oversupply and bubble burst',
-    imageUrl: DEMO_IMAGES.aiModel,
+    imageUrl: DEMO_IMAGES.megaeth,
     probability: 0.38,
     yesPercentage: 38,
     noPercentage: 62,
@@ -572,7 +572,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will Microsoft invest another $10B+ in OpenAI in 2026?',
     relation: 'IMPLIES',
     explanation: 'Microsoft investment signals confidence in AI market',
-    imageUrl: DEMO_IMAGES.largest,
+    imageUrl: DEMO_IMAGES.microsoft,
     probability: 0.42,
     yesPercentage: 42,
     noPercentage: 58,
@@ -584,7 +584,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will Google announce major AI breakthroughs at I/O 2026?',
     relation: 'CORRELATED',
     explanation: 'Google AI progress affects competitive landscape',
-    imageUrl: DEMO_IMAGES.aiModel,
+    imageUrl: DEMO_IMAGES.gemini,
     probability: 0.85,
     yesPercentage: 85,
     noPercentage: 15,
@@ -596,7 +596,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will OpenAI revenue exceed $10B in 2026?',
     relation: 'IMPLIES',
     explanation: 'OpenAI revenue growth validates AI market opportunity',
-    imageUrl: DEMO_IMAGES.openai,
+    imageUrl: DEMO_IMAGES.openaiIpo,
     probability: 0.65,
     yesPercentage: 65,
     noPercentage: 35,
@@ -608,7 +608,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will AI startup median valuation drop 40%+ in 2026?',
     relation: 'CONTRADICTS',
     explanation: 'Valuation crash signals AI bubble burst',
-    imageUrl: DEMO_IMAGES.btc,
+    imageUrl: DEMO_IMAGES.infinex,
     probability: 0.28,
     yesPercentage: 28,
     noPercentage: 72,
@@ -620,7 +620,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will big tech layoffs exceed 100K employees in 2026?',
     relation: 'IMPLIES',
     explanation: 'Mass layoffs signal AI investment pullback',
-    imageUrl: DEMO_IMAGES.election,
+    imageUrl: DEMO_IMAGES.cabinet,
     probability: 0.32,
     yesPercentage: 32,
     noPercentage: 68,
@@ -644,7 +644,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will OpenAI reach 1M enterprise customers by end of 2026?',
     relation: 'IMPLIES',
     explanation: 'Enterprise adoption validates AI B2B market',
-    imageUrl: DEMO_IMAGES.openai,
+    imageUrl: DEMO_IMAGES.chatbotArena,
     probability: 0.48,
     yesPercentage: 48,
     noPercentage: 52,
@@ -656,7 +656,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will ChatGPT MAU exceed 500M by end of 2026?',
     relation: 'CORRELATED',
     explanation: 'ChatGPT usage indicates consumer AI demand',
-    imageUrl: DEMO_IMAGES.grok,
+    imageUrl: DEMO_IMAGES.deepseek,
     probability: 0.72,
     yesPercentage: 72,
     noPercentage: 28,
@@ -672,7 +672,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will S&P 500 reach 6500 by end of 2026?',
     relation: 'CORRELATED',
     explanation: 'Broad market health affects AI sector funding',
-    imageUrl: DEMO_IMAGES.largest,
+    imageUrl: DEMO_IMAGES.tesla,
     probability: 0.55,
     yesPercentage: 55,
     noPercentage: 45,
@@ -684,7 +684,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will NASDAQ reach 22000 by end of 2026?',
     relation: 'IMPLIES',
     explanation: 'Tech-heavy NASDAQ directly reflects AI sector performance',
-    imageUrl: DEMO_IMAGES.btc,
+    imageUrl: DEMO_IMAGES.alphabet,
     probability: 0.48,
     yesPercentage: 48,
     noPercentage: 52,
@@ -696,7 +696,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will the US enter a recession in 2026?',
     relation: 'IMPLIES',
     explanation: 'Recession would trigger AI investment pullback',
-    imageUrl: DEMO_IMAGES.powell,
+    imageUrl: DEMO_IMAGES.fedRates,
     probability: 0.25,
     yesPercentage: 25,
     noPercentage: 75,
@@ -708,7 +708,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will US inflation drop below 2.5% in 2026?',
     relation: 'CONDITIONED_ON',
     explanation: 'Inflation affects Fed policy and market liquidity',
-    imageUrl: DEMO_IMAGES.fedChair,
+    imageUrl: DEMO_IMAGES.tariffRevenue,
     probability: 0.42,
     yesPercentage: 42,
     noPercentage: 58,
@@ -720,7 +720,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will US unemployment exceed 5% in 2026?',
     relation: 'IMPLIES',
     explanation: 'Rising unemployment signals economic weakness',
-    imageUrl: DEMO_IMAGES.election,
+    imageUrl: DEMO_IMAGES.trump,
     probability: 0.18,
     yesPercentage: 18,
     noPercentage: 82,
@@ -732,7 +732,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will US-China trade tensions escalate significantly in 2026?',
     relation: 'CONDITIONED_ON',
     explanation: 'Trade war affects AI supply chains and market access',
-    imageUrl: DEMO_IMAGES.iran,
+    imageUrl: DEMO_IMAGES.tariffs250b,
     probability: 0.45,
     yesPercentage: 45,
     noPercentage: 55,
@@ -768,7 +768,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will US GDP growth exceed 3% in 2026?',
     relation: 'CORRELATED',
     explanation: 'Strong GDP supports tech investment',
-    imageUrl: DEMO_IMAGES.insurrection,
+    imageUrl: DEMO_IMAGES.elonBudget,
     probability: 0.42,
     yesPercentage: 42,
     noPercentage: 58,
@@ -796,7 +796,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will VC funding in AI exceed $100B globally in 2026?',
     relation: 'IMPLIES',
     explanation: 'VC funding levels indicate AI investment appetite',
-    imageUrl: DEMO_IMAGES.btc,
+    imageUrl: DEMO_IMAGES.puffpaw,
     probability: 0.55,
     yesPercentage: 55,
     noPercentage: 45,
@@ -808,7 +808,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will there be 20+ major tech IPOs in 2026?',
     relation: 'CORRELATED',
     explanation: 'IPO activity reflects market confidence',
-    imageUrl: DEMO_IMAGES.anthropic,
+    imageUrl: DEMO_IMAGES.medline,
     probability: 0.42,
     yesPercentage: 42,
     noPercentage: 58,
@@ -820,7 +820,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will 100+ funded AI startups fail in 2026?',
     relation: 'CONTRADICTS',
     explanation: 'Mass AI startup failures signal bubble burst',
-    imageUrl: DEMO_IMAGES.election,
+    imageUrl: DEMO_IMAGES.nft,
     probability: 0.35,
     yesPercentage: 35,
     noPercentage: 65,
@@ -832,7 +832,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will Google invest additional $2B+ in Anthropic in 2026?',
     relation: 'IMPLIES',
     explanation: 'Google investment signals Anthropic valuation strength',
-    imageUrl: DEMO_IMAGES.aiModel,
+    imageUrl: DEMO_IMAGES.baidu,
     probability: 0.48,
     yesPercentage: 48,
     noPercentage: 52,
@@ -844,7 +844,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will Amazon increase Anthropic investment in 2026?',
     relation: 'IMPLIES',
     explanation: 'Amazon AI investment reflects cloud AI demand',
-    imageUrl: DEMO_IMAGES.tesla,
+    imageUrl: DEMO_IMAGES.alibaba,
     probability: 0.55,
     yesPercentage: 55,
     noPercentage: 45,
@@ -856,7 +856,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: "Will Salesforce AI features generate $5B+ revenue in 2026?",
     relation: 'CORRELATED',
     explanation: 'Enterprise AI adoption validates B2B market',
-    imageUrl: DEMO_IMAGES.largest,
+    imageUrl: DEMO_IMAGES.elonDoge,
     probability: 0.52,
     yesPercentage: 52,
     noPercentage: 48,
@@ -868,7 +868,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will 50%+ of Fortune 500 deploy AI agents by 2026?',
     relation: 'IMPLIES',
     explanation: 'Enterprise adoption validates long-term AI value',
-    imageUrl: DEMO_IMAGES.openai,
+    imageUrl: DEMO_IMAGES.xai,
     probability: 0.48,
     yesPercentage: 48,
     noPercentage: 52,
@@ -880,7 +880,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Which company will have the largest market cap by June 30, 2026?',
     relation: 'CORRELATED',
     explanation: 'Market cap leadership reflects AI sector dominance',
-    imageUrl: DEMO_IMAGES.largest,
+    imageUrl: DEMO_IMAGES.spaceSale,
     probability: 0.58,
     yesPercentage: 58,
     noPercentage: 42,
@@ -920,7 +920,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will major cloud providers cut GPU prices 30%+ in 2026?',
     relation: 'IMPLIES',
     explanation: 'Cloud GPU price cuts indicate supply glut',
-    imageUrl: DEMO_IMAGES.aiModel,
+    imageUrl: DEMO_IMAGES.flyingTulip,
     probability: 0.42,
     yesPercentage: 42,
     noPercentage: 58,
@@ -932,7 +932,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will 10+ AI unicorns have down rounds in 2026?',
     relation: 'IMPLIES',
     explanation: 'Down rounds signal AI valuation correction',
-    imageUrl: DEMO_IMAGES.anthropic,
+    imageUrl: DEMO_IMAGES.elonBudget5,
     probability: 0.38,
     yesPercentage: 38,
     noPercentage: 62,
@@ -944,7 +944,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will there be a 20%+ tech stock correction in 2026?',
     relation: 'IMPLIES',
     explanation: 'Major tech correction would trigger AI funding freeze',
-    imageUrl: DEMO_IMAGES.powell,
+    imageUrl: DEMO_IMAGES.earthquake,
     probability: 0.28,
     yesPercentage: 28,
     noPercentage: 72,
@@ -956,7 +956,7 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
     question: 'Will AI companies lay off 50K+ employees in 2026?',
     relation: 'IMPLIES',
     explanation: 'AI sector layoffs signal investment pullback',
-    imageUrl: DEMO_IMAGES.election,
+    imageUrl: DEMO_IMAGES.epstein,
     probability: 0.22,
     yesPercentage: 22,
     noPercentage: 78,
@@ -968,21 +968,21 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
   { id: 'ai-bubble-1-2-1', parentId: 'ai-bubble-1-2', url: 'https://polymarket.com/event/gpt5-benchmarks', question: 'Will GPT-5 beat Claude on all benchmarks?', relation: 'IMPLIES', explanation: 'Benchmark results determine model leadership', imageUrl: DEMO_IMAGES.gpt5, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
   { id: 'ai-bubble-1-2-2', parentId: 'ai-bubble-1-2', url: 'https://polymarket.com/event/gpt5-pricing', question: 'Will GPT-5 API cost less than GPT-4?', relation: 'CONDITIONED_ON', explanation: 'Pricing affects enterprise adoption', imageUrl: DEMO_IMAGES.openaiIpo, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
   { id: 'ai-bubble-1-3-1', parentId: 'ai-bubble-1-3', url: 'https://polymarket.com/event/claude-enterprise', question: 'Will Claude reach 100K enterprise customers?', relation: 'IMPLIES', explanation: 'Enterprise traction validates B2B strategy', imageUrl: DEMO_IMAGES.anthropicIpo, probability: 0.48, yesPercentage: 48, noPercentage: 52 },
-  { id: 'ai-bubble-1-3-2', parentId: 'ai-bubble-1-3', url: 'https://polymarket.com/event/anthropic-revenue', question: 'Will Anthropic revenue exceed $2B in 2026?', relation: 'CORRELATED', explanation: 'Revenue growth signals market strength', imageUrl: DEMO_IMAGES.anthropic, probability: 0.52, yesPercentage: 52, noPercentage: 48 },
+  { id: 'ai-bubble-1-3-2', parentId: 'ai-bubble-1-3', url: 'https://polymarket.com/event/anthropic-revenue', question: 'Will Anthropic revenue exceed $2B in 2026?', relation: 'CORRELATED', explanation: 'Revenue growth signals market strength', imageUrl: DEMO_IMAGES.grok2, probability: 0.52, yesPercentage: 52, noPercentage: 48 },
   { id: 'ai-bubble-1-4-1', parentId: 'ai-bubble-1-4', url: 'https://polymarket.com/event/gemini-beats-gpt', question: 'Will Gemini outperform GPT-5 on release?', relation: 'CORRELATED', explanation: 'Google AI competitiveness affects landscape', imageUrl: DEMO_IMAGES.gemini, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
   { id: 'ai-bubble-1-5-1', parentId: 'ai-bubble-1-5', url: 'https://polymarket.com/event/llama-commercial', question: 'Will Llama 4 allow commercial use?', relation: 'CONDITIONED_ON', explanation: 'Commercial licensing drives open-source adoption', imageUrl: DEMO_IMAGES.aiCoding, probability: 0.72, yesPercentage: 72, noPercentage: 28 },
-  { id: 'ai-bubble-1-6-1', parentId: 'ai-bubble-1-6', url: 'https://polymarket.com/event/apple-ai-device', question: 'Will Apple release AI-focused device in 2026?', relation: 'IMPLIES', explanation: 'Hardware+AI integration defines edge computing', imageUrl: DEMO_IMAGES.apple, probability: 0.42, yesPercentage: 42, noPercentage: 58 },
-  { id: 'ai-bubble-1-7-1', parentId: 'ai-bubble-1-7', url: 'https://polymarket.com/event/aws-ai-revenue', question: 'Will AWS AI services revenue exceed $20B?', relation: 'CORRELATED', explanation: 'Cloud AI revenue validates infrastructure demand', imageUrl: DEMO_IMAGES.amazon, probability: 0.55, yesPercentage: 55, noPercentage: 45 },
+  { id: 'ai-bubble-1-6-1', parentId: 'ai-bubble-1-6', url: 'https://polymarket.com/event/apple-ai-device', question: 'Will Apple release AI-focused device in 2026?', relation: 'IMPLIES', explanation: 'Hardware+AI integration defines edge computing', imageUrl: DEMO_IMAGES.khamenei, probability: 0.42, yesPercentage: 42, noPercentage: 58 },
+  { id: 'ai-bubble-1-7-1', parentId: 'ai-bubble-1-7', url: 'https://polymarket.com/event/aws-ai-revenue', question: 'Will AWS AI services revenue exceed $20B?', relation: 'CORRELATED', explanation: 'Cloud AI revenue validates infrastructure demand', imageUrl: DEMO_IMAGES.usStrikes, probability: 0.55, yesPercentage: 55, noPercentage: 45 },
   { id: 'ai-bubble-1-8-1', parentId: 'ai-bubble-1-8', url: 'https://polymarket.com/event/musk-openai-settlement', question: 'Will Musk and Altman settle out of court?', relation: 'CONDITIONED_ON', explanation: 'Settlement avoids prolonged legal uncertainty', imageUrl: DEMO_IMAGES.elonTweets, probability: 0.32, yesPercentage: 32, noPercentage: 68 },
 
   // ============================================
   // MORE LEVEL 3: Children of ai-bubble-2-X
   // ============================================
-  { id: 'ai-bubble-2-1-1', parentId: 'ai-bubble-2-1', url: 'https://polymarket.com/event/amd-ai-chips', question: 'Will AMD AI chip market share exceed 20%?', relation: 'IMPLIES', explanation: 'AMD competition affects NVIDIA dominance', imageUrl: DEMO_IMAGES.nvidia, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
+  { id: 'ai-bubble-2-1-1', parentId: 'ai-bubble-2-1', url: 'https://polymarket.com/event/amd-ai-chips', question: 'Will AMD AI chip market share exceed 20%?', relation: 'IMPLIES', explanation: 'AMD competition affects NVIDIA dominance', imageUrl: DEMO_IMAGES.zelenskyySuit, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
   { id: 'ai-bubble-2-2-1', parentId: 'ai-bubble-2-2', url: 'https://polymarket.com/event/intel-foundry', question: 'Will Intel foundry win major AI chip contract?', relation: 'CORRELATED', explanation: 'Foundry success diversifies chip supply', imageUrl: DEMO_IMAGES.acquisitions, probability: 0.28, yesPercentage: 28, noPercentage: 72 },
   { id: 'ai-bubble-2-3-1', parentId: 'ai-bubble-2-3', url: 'https://polymarket.com/event/chip-etf-crash', question: 'Will semiconductor ETFs drop 20%+ in 2026?', relation: 'CONTRADICTS', explanation: 'ETF crash signals bubble burst', imageUrl: DEMO_IMAGES.megaeth, probability: 0.25, yesPercentage: 25, noPercentage: 75 },
-  { id: 'ai-bubble-2-5-1', parentId: 'ai-bubble-2-5', url: 'https://polymarket.com/event/tsmc-taiwan', question: 'Will TSMC announce US fab expansion?', relation: 'CONDITIONED_ON', explanation: 'TSMC expansion reduces Taiwan risk', imageUrl: DEMO_IMAGES.china, probability: 0.62, yesPercentage: 62, noPercentage: 38 },
-  { id: 'ai-bubble-2-6-1', parentId: 'ai-bubble-2-6', url: 'https://polymarket.com/event/chip-ban-china', question: 'Will US ban more chips to China in 2026?', relation: 'IMPLIES', explanation: 'Export expansion affects chip demand', imageUrl: DEMO_IMAGES.tariffRevenue, probability: 0.72, yesPercentage: 72, noPercentage: 28 },
+  { id: 'ai-bubble-2-5-1', parentId: 'ai-bubble-2-5', url: 'https://polymarket.com/event/tsmc-taiwan', question: 'Will TSMC announce US fab expansion?', relation: 'CONDITIONED_ON', explanation: 'TSMC expansion reduces Taiwan risk', imageUrl: DEMO_IMAGES.ukraineCeasefire, probability: 0.62, yesPercentage: 62, noPercentage: 38 },
+  { id: 'ai-bubble-2-6-1', parentId: 'ai-bubble-2-6', url: 'https://polymarket.com/event/chip-ban-china', question: 'Will US ban more chips to China in 2026?', relation: 'IMPLIES', explanation: 'Export expansion affects chip demand', imageUrl: DEMO_IMAGES.insurrection, probability: 0.72, yesPercentage: 72, noPercentage: 28 },
   { id: 'ai-bubble-2-7-1', parentId: 'ai-bubble-2-7', url: 'https://polymarket.com/event/hyperscaler-capex', question: 'Will hyperscaler CapEx slow in H2 2026?', relation: 'CONTRADICTS', explanation: 'Capex slowdown signals demand peak', imageUrl: DEMO_IMAGES.starship, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
   { id: 'ai-bubble-2-8-1', parentId: 'ai-bubble-2-8', url: 'https://polymarket.com/event/arm-ai-chips', question: 'Will ARM-based AI chips gain significant share?', relation: 'CORRELATED', explanation: 'ARM architecture affects mobile AI', imageUrl: DEMO_IMAGES.xrp, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
   { id: 'ai-bubble-2-9-1', parentId: 'ai-bubble-2-9', url: 'https://polymarket.com/event/networking-bottleneck', question: 'Will AI networking become major bottleneck?', relation: 'IMPLIES', explanation: 'Networking limits affect infrastructure build', imageUrl: DEMO_IMAGES.sentient, probability: 0.55, yesPercentage: 55, noPercentage: 45 },
@@ -990,51 +990,51 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
   // ============================================
   // MORE LEVEL 3: Children of ai-bubble-3-X
   // ============================================
-  { id: 'ai-bubble-3-1-1', parentId: 'ai-bubble-3-1', url: 'https://polymarket.com/event/msft-copilot-revenue', question: 'Will Microsoft Copilot revenue exceed $5B?', relation: 'IMPLIES', explanation: 'Copilot success validates AI integration', imageUrl: DEMO_IMAGES.microsoft, probability: 0.48, yesPercentage: 48, noPercentage: 52 },
-  { id: 'ai-bubble-3-2-1', parentId: 'ai-bubble-3-2', url: 'https://polymarket.com/event/google-ai-search', question: 'Will Google AI search replace 30% of queries?', relation: 'CORRELATED', explanation: 'AI search adoption indicates consumer shift', imageUrl: DEMO_IMAGES.chatbotArena, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
-  { id: 'ai-bubble-3-3-1', parentId: 'ai-bubble-3-3', url: 'https://polymarket.com/event/openai-profitable', question: 'Will OpenAI become profitable in 2026?', relation: 'IMPLIES', explanation: 'Profitability validates AI business model', imageUrl: DEMO_IMAGES.openaiIpo, probability: 0.32, yesPercentage: 32, noPercentage: 68 },
-  { id: 'ai-bubble-3-5-1', parentId: 'ai-bubble-3-5', url: 'https://polymarket.com/event/faang-ai-layoffs', question: 'Will FAANG announce AI-driven layoffs?', relation: 'IMPLIES', explanation: 'AI automation causing job losses signals maturity', imageUrl: DEMO_IMAGES.cabinet, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
-  { id: 'ai-bubble-3-6-1', parentId: 'ai-bubble-3-6', url: 'https://polymarket.com/event/eu-ai-fines', question: 'Will EU fine an AI company over $1B?', relation: 'CONDITIONED_ON', explanation: 'Major fines indicate regulatory enforcement', imageUrl: DEMO_IMAGES.nato, probability: 0.28, yesPercentage: 28, noPercentage: 72 },
-  { id: 'ai-bubble-3-7-1', parentId: 'ai-bubble-3-7', url: 'https://polymarket.com/event/chatgpt-enterprise', question: 'Will ChatGPT Enterprise reach 500K customers?', relation: 'IMPLIES', explanation: 'Enterprise scale validates B2B opportunity', imageUrl: DEMO_IMAGES.deepseek, probability: 0.52, yesPercentage: 52, noPercentage: 48 },
-  { id: 'ai-bubble-3-8-1', parentId: 'ai-bubble-3-8', url: 'https://polymarket.com/event/chatgpt-plateau', question: 'Will ChatGPT user growth plateau in 2026?', relation: 'CONTRADICTS', explanation: 'Growth plateau signals market saturation', imageUrl: DEMO_IMAGES.xai, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
+  { id: 'ai-bubble-3-1-1', parentId: 'ai-bubble-3-1', url: 'https://polymarket.com/event/msft-copilot-revenue', question: 'Will Microsoft Copilot revenue exceed $5B?', relation: 'IMPLIES', explanation: 'Copilot success validates AI integration', imageUrl: DEMO_IMAGES.trumpResign, probability: 0.48, yesPercentage: 48, noPercentage: 52 },
+  { id: 'ai-bubble-3-2-1', parentId: 'ai-bubble-3-2', url: 'https://polymarket.com/event/google-ai-search', question: 'Will Google AI search replace 30% of queries?', relation: 'CORRELATED', explanation: 'AI search adoption indicates consumer shift', imageUrl: DEMO_IMAGES.vietnam, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
+  { id: 'ai-bubble-3-3-1', parentId: 'ai-bubble-3-3', url: 'https://polymarket.com/event/openai-profitable', question: 'Will OpenAI become profitable in 2026?', relation: 'IMPLIES', explanation: 'Profitability validates AI business model', imageUrl: DEMO_IMAGES.venezuela, probability: 0.32, yesPercentage: 32, noPercentage: 68 },
+  { id: 'ai-bubble-3-5-1', parentId: 'ai-bubble-3-5', url: 'https://polymarket.com/event/faang-ai-layoffs', question: 'Will FAANG announce AI-driven layoffs?', relation: 'IMPLIES', explanation: 'AI automation causing job losses signals maturity', imageUrl: DEMO_IMAGES.venezuelaInvade, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
+  { id: 'ai-bubble-3-6-1', parentId: 'ai-bubble-3-6', url: 'https://polymarket.com/event/eu-ai-fines', question: 'Will EU fine an AI company over $1B?', relation: 'CONDITIONED_ON', explanation: 'Major fines indicate regulatory enforcement', imageUrl: DEMO_IMAGES.iranRegime, probability: 0.28, yesPercentage: 28, noPercentage: 72 },
+  { id: 'ai-bubble-3-7-1', parentId: 'ai-bubble-3-7', url: 'https://polymarket.com/event/chatgpt-enterprise', question: 'Will ChatGPT Enterprise reach 500K customers?', relation: 'IMPLIES', explanation: 'Enterprise scale validates B2B opportunity', imageUrl: DEMO_IMAGES.iranNuke, probability: 0.52, yesPercentage: 52, noPercentage: 48 },
+  { id: 'ai-bubble-3-8-1', parentId: 'ai-bubble-3-8', url: 'https://polymarket.com/event/chatgpt-plateau', question: 'Will ChatGPT user growth plateau in 2026?', relation: 'CONTRADICTS', explanation: 'Growth plateau signals market saturation', imageUrl: DEMO_IMAGES.iranWar, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
 
   // ============================================
   // MORE LEVEL 3: Children of ai-bubble-4-X
   // ============================================
-  { id: 'ai-bubble-4-1-1', parentId: 'ai-bubble-4-1', url: 'https://polymarket.com/event/sp500-correction', question: 'Will S&P 500 have a 15%+ correction in 2026?', relation: 'IMPLIES', explanation: 'Market correction affects AI funding', imageUrl: DEMO_IMAGES.largest, probability: 0.32, yesPercentage: 32, noPercentage: 68 },
-  { id: 'ai-bubble-4-2-1', parentId: 'ai-bubble-4-2', url: 'https://polymarket.com/event/nasdaq-bubble', question: 'Will NASDAQ be called a bubble in 2026?', relation: 'CORRELATED', explanation: 'Bubble narrative affects sentiment', imageUrl: DEMO_IMAGES.btc, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
-  { id: 'ai-bubble-4-4-1', parentId: 'ai-bubble-4-4', url: 'https://polymarket.com/event/fed-pivot', question: 'Will Fed pivot to rate cuts mid-2026?', relation: 'CONDITIONED_ON', explanation: 'Fed pivot affects growth stock valuations', imageUrl: DEMO_IMAGES.fedChair, probability: 0.55, yesPercentage: 55, noPercentage: 45 },
-  { id: 'ai-bubble-4-5-1', parentId: 'ai-bubble-4-5', url: 'https://polymarket.com/event/tech-hiring-freeze', question: 'Will major tech companies freeze hiring?', relation: 'IMPLIES', explanation: 'Hiring freeze signals reduced growth expectations', imageUrl: DEMO_IMAGES.election, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
-  { id: 'ai-bubble-4-6-1', parentId: 'ai-bubble-4-6', url: 'https://polymarket.com/event/china-tariffs', question: 'Will US impose new tariffs on China AI?', relation: 'CONDITIONED_ON', explanation: 'Tariffs affect AI supply chain costs', imageUrl: DEMO_IMAGES.iran, probability: 0.58, yesPercentage: 58, noPercentage: 42 },
-  { id: 'ai-bubble-4-7-1', parentId: 'ai-bubble-4-7', url: 'https://polymarket.com/event/bond-market-crisis', question: 'Will there be a bond market crisis in 2026?', relation: 'IMPLIES', explanation: 'Bond crisis affects all asset classes', imageUrl: DEMO_IMAGES.eth, probability: 0.18, yesPercentage: 18, noPercentage: 82 },
-  { id: 'ai-bubble-4-9-1', parentId: 'ai-bubble-4-9', url: 'https://polymarket.com/event/ai-gdp-contribution', question: 'Will AI contribute 1%+ to US GDP growth?', relation: 'CORRELATED', explanation: 'AI economic impact validates investment', imageUrl: DEMO_IMAGES.insurrection, probability: 0.42, yesPercentage: 42, noPercentage: 58 },
+  { id: 'ai-bubble-4-1-1', parentId: 'ai-bubble-4-1', url: 'https://polymarket.com/event/sp500-correction', question: 'Will S&P 500 have a 15%+ correction in 2026?', relation: 'IMPLIES', explanation: 'Market correction affects AI funding', imageUrl: DEMO_IMAGES.climate, probability: 0.32, yesPercentage: 32, noPercentage: 68 },
+  { id: 'ai-bubble-4-2-1', parentId: 'ai-bubble-4-2', url: 'https://polymarket.com/event/nasdaq-bubble', question: 'Will NASDAQ be called a bubble in 2026?', relation: 'CORRELATED', explanation: 'Bubble narrative affects sentiment', imageUrl: DEMO_IMAGES.gta6, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
+  { id: 'ai-bubble-4-4-1', parentId: 'ai-bubble-4-4', url: 'https://polymarket.com/event/fed-pivot', question: 'Will Fed pivot to rate cuts mid-2026?', relation: 'CONDITIONED_ON', explanation: 'Fed pivot affects growth stock valuations', imageUrl: DEMO_IMAGES.gta6Price, probability: 0.55, yesPercentage: 55, noPercentage: 45 },
+  { id: 'ai-bubble-4-5-1', parentId: 'ai-bubble-4-5', url: 'https://polymarket.com/event/tech-hiring-freeze', question: 'Will major tech companies freeze hiring?', relation: 'IMPLIES', explanation: 'Hiring freeze signals reduced growth expectations', imageUrl: DEMO_IMAGES.oscars, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
+  { id: 'ai-bubble-4-6-1', parentId: 'ai-bubble-4-6', url: 'https://polymarket.com/event/china-tariffs', question: 'Will US impose new tariffs on China AI?', relation: 'CONDITIONED_ON', explanation: 'Tariffs affect AI supply chain costs', imageUrl: DEMO_IMAGES.avatar3, probability: 0.58, yesPercentage: 58, noPercentage: 42 },
+  { id: 'ai-bubble-4-7-1', parentId: 'ai-bubble-4-7', url: 'https://polymarket.com/event/bond-market-crisis', question: 'Will there be a bond market crisis in 2026?', relation: 'IMPLIES', explanation: 'Bond crisis affects all asset classes', imageUrl: DEMO_IMAGES.strangerThings, probability: 0.18, yesPercentage: 18, noPercentage: 82 },
+  { id: 'ai-bubble-4-9-1', parentId: 'ai-bubble-4-9', url: 'https://polymarket.com/event/ai-gdp-contribution', question: 'Will AI contribute 1%+ to US GDP growth?', relation: 'CORRELATED', explanation: 'AI economic impact validates investment', imageUrl: DEMO_IMAGES.beastGames, probability: 0.42, yesPercentage: 42, noPercentage: 58 },
 
   // ============================================
   // MORE LEVEL 3: Children of ai-bubble-5-X
   // ============================================
-  { id: 'ai-bubble-5-1-1', parentId: 'ai-bubble-5-1', url: 'https://polymarket.com/event/ai-vc-bubble', question: 'Will AI VC funding drop 30%+ YoY?', relation: 'CONTRADICTS', explanation: 'Funding drop signals investor retreat', imageUrl: DEMO_IMAGES.btc, probability: 0.28, yesPercentage: 28, noPercentage: 72 },
-  { id: 'ai-bubble-5-2-1', parentId: 'ai-bubble-5-2', url: 'https://polymarket.com/event/ai-ipo-flops', question: 'Will 3+ AI IPOs trade below offering price?', relation: 'CONTRADICTS', explanation: 'IPO failures signal market oversaturation', imageUrl: DEMO_IMAGES.anthropic, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
-  { id: 'ai-bubble-5-4-1', parentId: 'ai-bubble-5-4', url: 'https://polymarket.com/event/anthropic-google-acquisition', question: 'Will Google acquire majority stake in Anthropic?', relation: 'IMPLIES', explanation: 'Acquisition consolidates AI market', imageUrl: DEMO_IMAGES.aiModel, probability: 0.22, yesPercentage: 22, noPercentage: 78 },
-  { id: 'ai-bubble-5-5-1', parentId: 'ai-bubble-5-5', url: 'https://polymarket.com/event/aws-anthropic-exclusive', question: 'Will AWS get exclusive Anthropic partnership?', relation: 'CONDITIONED_ON', explanation: 'Exclusivity deals reshape cloud AI', imageUrl: DEMO_IMAGES.tesla, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
-  { id: 'ai-bubble-5-6-1', parentId: 'ai-bubble-5-6', url: 'https://polymarket.com/event/crm-ai-dominant', question: 'Will AI become dominant CRM feature?', relation: 'CORRELATED', explanation: 'Enterprise AI adoption accelerates', imageUrl: DEMO_IMAGES.largest, probability: 0.62, yesPercentage: 62, noPercentage: 38 },
-  { id: 'ai-bubble-5-7-1', parentId: 'ai-bubble-5-7', url: 'https://polymarket.com/event/ai-agents-production', question: 'Will AI agents run in production at scale?', relation: 'IMPLIES', explanation: 'Production AI agents validate agentic future', imageUrl: DEMO_IMAGES.openai, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
-  { id: 'ai-bubble-5-8-1', parentId: 'ai-bubble-5-8', url: 'https://polymarket.com/event/apple-market-cap', question: 'Will Apple regain largest market cap?', relation: 'CORRELATED', explanation: 'Apple leadership affects tech sentiment', imageUrl: DEMO_IMAGES.largest, probability: 0.48, yesPercentage: 48, noPercentage: 52 },
-  { id: 'ai-bubble-5-9-1', parentId: 'ai-bubble-5-9', url: 'https://polymarket.com/event/btc-200k', question: 'Will Bitcoin reach $200K in 2026?', relation: 'WEAK_SIGNAL', explanation: 'Bitcoin rally indicates risk-on sentiment', imageUrl: DEMO_IMAGES.btc, probability: 0.28, yesPercentage: 28, noPercentage: 72 },
+  { id: 'ai-bubble-5-1-1', parentId: 'ai-bubble-5-1', url: 'https://polymarket.com/event/ai-vc-bubble', question: 'Will AI VC funding drop 30%+ YoY?', relation: 'CONTRADICTS', explanation: 'Funding drop signals investor retreat', imageUrl: DEMO_IMAGES.honnold, probability: 0.28, yesPercentage: 28, noPercentage: 72 },
+  { id: 'ai-bubble-5-2-1', parentId: 'ai-bubble-5-2', url: 'https://polymarket.com/event/ai-ipo-flops', question: 'Will 3+ AI IPOs trade below offering price?', relation: 'CONTRADICTS', explanation: 'IPO failures signal market oversaturation', imageUrl: DEMO_IMAGES.lightyear, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
+  { id: 'ai-bubble-5-4-1', parentId: 'ai-bubble-5-4', url: 'https://polymarket.com/event/anthropic-google-acquisition', question: 'Will Google acquire majority stake in Anthropic?', relation: 'IMPLIES', explanation: 'Acquisition consolidates AI market', imageUrl: DEMO_IMAGES.magnus, probability: 0.22, yesPercentage: 22, noPercentage: 78 },
+  { id: 'ai-bubble-5-5-1', parentId: 'ai-bubble-5-5', url: 'https://polymarket.com/event/aws-anthropic-exclusive', question: 'Will AWS get exclusive Anthropic partnership?', relation: 'CONDITIONED_ON', explanation: 'Exclusivity deals reshape cloud AI', imageUrl: DEMO_IMAGES.football, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
+  { id: 'ai-bubble-5-6-1', parentId: 'ai-bubble-5-6', url: 'https://polymarket.com/event/crm-ai-dominant', question: 'Will AI become dominant CRM feature?', relation: 'CORRELATED', explanation: 'Enterprise AI adoption accelerates', imageUrl: DEMO_IMAGES.nfl, probability: 0.62, yesPercentage: 62, noPercentage: 38 },
+  { id: 'ai-bubble-5-7-1', parentId: 'ai-bubble-5-7', url: 'https://polymarket.com/event/ai-agents-production', question: 'Will AI agents run in production at scale?', relation: 'IMPLIES', explanation: 'Production AI agents validate agentic future', imageUrl: DEMO_IMAGES.basketball, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
+  { id: 'ai-bubble-5-8-1', parentId: 'ai-bubble-5-8', url: 'https://polymarket.com/event/apple-market-cap', question: 'Will Apple regain largest market cap?', relation: 'CORRELATED', explanation: 'Apple leadership affects tech sentiment', imageUrl: DEMO_IMAGES.chiefs, probability: 0.48, yesPercentage: 48, noPercentage: 52 },
+  { id: 'ai-bubble-5-9-1', parentId: 'ai-bubble-5-9', url: 'https://polymarket.com/event/btc-200k', question: 'Will Bitcoin reach $200K in 2026?', relation: 'WEAK_SIGNAL', explanation: 'Bitcoin rally indicates risk-on sentiment', imageUrl: DEMO_IMAGES.cowboys, probability: 0.28, yesPercentage: 28, noPercentage: 72 },
 
   // ============================================
   // LEVEL 4: Children of Level 3 deps - Creating deeper tree
   // ============================================
-  { id: 'ai-bubble-1-2-1-1', parentId: 'ai-bubble-1-2-1', url: 'https://polymarket.com/event/gpt5-reasoning', question: 'Will GPT-5 demonstrate PhD-level reasoning?', relation: 'IMPLIES', explanation: 'Reasoning capability defines AGI progress', imageUrl: DEMO_IMAGES.openai, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
-  { id: 'ai-bubble-1-2-1-2', parentId: 'ai-bubble-1-2-1', url: 'https://polymarket.com/event/ai-math-olympiad', question: 'Will AI win Math Olympiad gold in 2026?', relation: 'CORRELATED', explanation: 'Math capability measures reasoning progress', imageUrl: DEMO_IMAGES.aiModel, probability: 0.42, yesPercentage: 42, noPercentage: 58 },
-  { id: 'ai-bubble-1-3-1-1', parentId: 'ai-bubble-1-3-1', url: 'https://polymarket.com/event/claude-code-production', question: 'Will Claude Code reach 1M daily users?', relation: 'IMPLIES', explanation: 'Developer adoption drives enterprise deals', imageUrl: DEMO_IMAGES.anthropic, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
-  { id: 'ai-bubble-2-5-1-1', parentId: 'ai-bubble-2-5-1', url: 'https://polymarket.com/event/tsmc-arizona', question: 'Will TSMC Arizona fab produce AI chips?', relation: 'CONDITIONED_ON', explanation: 'US chip production reduces supply risk', imageUrl: DEMO_IMAGES.ukraine, probability: 0.55, yesPercentage: 55, noPercentage: 45 },
-  { id: 'ai-bubble-2-6-1-1', parentId: 'ai-bubble-2-6-1', url: 'https://polymarket.com/event/china-chip-independence', question: 'Will China achieve 7nm chip production?', relation: 'CONTRADICTS', explanation: 'China independence affects ban effectiveness', imageUrl: DEMO_IMAGES.election, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
-  { id: 'ai-bubble-3-3-1-1', parentId: 'ai-bubble-3-3-1', url: 'https://polymarket.com/event/openai-sustainable', question: 'Will OpenAI achieve sustainable unit economics?', relation: 'IMPLIES', explanation: 'Unit economics validate AI SaaS model', imageUrl: DEMO_IMAGES.openai, probability: 0.42, yesPercentage: 42, noPercentage: 58 },
-  { id: 'ai-bubble-3-6-1-1', parentId: 'ai-bubble-3-6-1', url: 'https://polymarket.com/event/eu-openai-ban', question: 'Will EU temporarily ban OpenAI services?', relation: 'CONDITIONED_ON', explanation: 'Regulatory ban creates market uncertainty', imageUrl: DEMO_IMAGES.portugal, probability: 0.18, yesPercentage: 18, noPercentage: 82 },
-  { id: 'ai-bubble-4-3-1-1', parentId: 'ai-bubble-4-3-1', url: 'https://polymarket.com/event/tech-bear-market', question: 'Will tech enter official bear market in 2026?', relation: 'IMPLIES', explanation: 'Bear market triggers AI funding freeze', imageUrl: DEMO_IMAGES.powell, probability: 0.25, yesPercentage: 25, noPercentage: 75 },
-  { id: 'ai-bubble-4-4-1-1', parentId: 'ai-bubble-4-4-1', url: 'https://polymarket.com/event/rate-cuts-2026', question: 'Will Fed cut rates 100bps+ in 2026?', relation: 'CONDITIONED_ON', explanation: 'Aggressive cuts signal economic concern', imageUrl: DEMO_IMAGES.fedChair, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
-  { id: 'ai-bubble-5-1-1-1', parentId: 'ai-bubble-5-1-1', url: 'https://polymarket.com/event/ai-winter-2027', question: 'Will experts declare AI winter by 2027?', relation: 'CONTRADICTS', explanation: 'AI winter sentiment crashes valuations', imageUrl: DEMO_IMAGES.btc, probability: 0.15, yesPercentage: 15, noPercentage: 85 },
-  { id: 'ai-bubble-5-4-1-1', parentId: 'ai-bubble-5-4-1', url: 'https://polymarket.com/event/google-antitrust-ai', question: 'Will Google face AI antitrust action?', relation: 'CONDITIONED_ON', explanation: 'Antitrust affects consolidation strategy', imageUrl: DEMO_IMAGES.aiModel, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
+  { id: 'ai-bubble-1-2-1-1', parentId: 'ai-bubble-1-2-1', url: 'https://polymarket.com/event/gpt5-reasoning', question: 'Will GPT-5 demonstrate PhD-level reasoning?', relation: 'IMPLIES', explanation: 'Reasoning capability defines AGI progress', imageUrl: DEMO_IMAGES.eagles, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
+  { id: 'ai-bubble-1-2-1-2', parentId: 'ai-bubble-1-2-1', url: 'https://polymarket.com/event/ai-math-olympiad', question: 'Will AI win Math Olympiad gold in 2026?', relation: 'CORRELATED', explanation: 'Math capability measures reasoning progress', imageUrl: DEMO_IMAGES.bills, probability: 0.42, yesPercentage: 42, noPercentage: 58 },
+  { id: 'ai-bubble-1-3-1-1', parentId: 'ai-bubble-1-3-1', url: 'https://polymarket.com/event/claude-code-production', question: 'Will Claude Code reach 1M daily users?', relation: 'IMPLIES', explanation: 'Developer adoption drives enterprise deals', imageUrl: DEMO_IMAGES.ravens, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
+  { id: 'ai-bubble-2-5-1-1', parentId: 'ai-bubble-2-5-1', url: 'https://polymarket.com/event/tsmc-arizona', question: 'Will TSMC Arizona fab produce AI chips?', relation: 'CONDITIONED_ON', explanation: 'US chip production reduces supply risk', imageUrl: DEMO_IMAGES.niners, probability: 0.55, yesPercentage: 55, noPercentage: 45 },
+  { id: 'ai-bubble-2-6-1-1', parentId: 'ai-bubble-2-6-1', url: 'https://polymarket.com/event/china-chip-independence', question: 'Will China achieve 7nm chip production?', relation: 'CONTRADICTS', explanation: 'China independence affects ban effectiveness', imageUrl: DEMO_IMAGES.lions, probability: 0.45, yesPercentage: 45, noPercentage: 55 },
+  { id: 'ai-bubble-3-3-1-1', parentId: 'ai-bubble-3-3-1', url: 'https://polymarket.com/event/openai-sustainable', question: 'Will OpenAI achieve sustainable unit economics?', relation: 'IMPLIES', explanation: 'Unit economics validate AI SaaS model', imageUrl: DEMO_IMAGES.packers, probability: 0.42, yesPercentage: 42, noPercentage: 58 },
+  { id: 'ai-bubble-3-6-1-1', parentId: 'ai-bubble-3-6-1', url: 'https://polymarket.com/event/eu-openai-ban', question: 'Will EU temporarily ban OpenAI services?', relation: 'CONDITIONED_ON', explanation: 'Regulatory ban creates market uncertainty', imageUrl: DEMO_IMAGES.t1, probability: 0.18, yesPercentage: 18, noPercentage: 82 },
+  { id: 'ai-bubble-4-3-1-1', parentId: 'ai-bubble-4-3-1', url: 'https://polymarket.com/event/tech-bear-market', question: 'Will tech enter official bear market in 2026?', relation: 'IMPLIES', explanation: 'Bear market triggers AI funding freeze', imageUrl: DEMO_IMAGES.jdg, probability: 0.25, yesPercentage: 25, noPercentage: 75 },
+  { id: 'ai-bubble-4-4-1-1', parentId: 'ai-bubble-4-4-1', url: 'https://polymarket.com/event/rate-cuts-2026', question: 'Will Fed cut rates 100bps+ in 2026?', relation: 'CONDITIONED_ON', explanation: 'Aggressive cuts signal economic concern', imageUrl: DEMO_IMAGES.vitality, probability: 0.35, yesPercentage: 35, noPercentage: 65 },
+  { id: 'ai-bubble-5-1-1-1', parentId: 'ai-bubble-5-1-1', url: 'https://polymarket.com/event/ai-winter-2027', question: 'Will experts declare AI winter by 2027?', relation: 'CONTRADICTS', explanation: 'AI winter sentiment crashes valuations', imageUrl: DEMO_IMAGES.measles, probability: 0.15, yesPercentage: 15, noPercentage: 85 },
+  { id: 'ai-bubble-5-4-1-1', parentId: 'ai-bubble-5-4-1', url: 'https://polymarket.com/event/google-antitrust-ai', question: 'Will Google face AI antitrust action?', relation: 'CONDITIONED_ON', explanation: 'Antitrust affects consolidation strategy', imageUrl: DEMO_IMAGES.snowMonth, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
 ];
 
 // Get AI bubble dependencies for a given parent (null = root level)
@@ -1077,6 +1077,77 @@ function getAiBubbleDependencies(
     yesPercentage: dep.yesPercentage,
     noPercentage: dep.noPercentage,
   }));
+}
+
+// Export function to get initial children to pre-populate tree for AI bubble events
+// This makes the visualization more impressive from the start
+export function getAiBubbleInitialChildren(): Array<{
+  id: string;
+  label: string;
+  imageUrl: string;
+  probability: number;
+  relation: string;
+  url: string;
+  explanation: string;
+  children: Array<{
+    id: string;
+    label: string;
+    imageUrl: string;
+    probability: number;
+    relation: string;
+    url: string;
+    explanation: string;
+    children: Array<{
+      id: string;
+      label: string;
+      imageUrl: string;
+      probability: number;
+      relation: string;
+      url: string;
+      explanation: string;
+    }>;
+  }>;
+}> {
+  // Get root-level deps (parentId = null)
+  const rootDeps = AI_BUBBLE_BURST_DEPENDENCIES.filter(d => d.parentId === null);
+
+  return rootDeps.map(rootDep => {
+    // Get level-2 children for this root dep
+    const level2Deps = AI_BUBBLE_BURST_DEPENDENCIES.filter(d => d.parentId === rootDep.id);
+
+    return {
+      id: rootDep.id,
+      label: rootDep.question,
+      imageUrl: rootDep.imageUrl,
+      probability: rootDep.probability,
+      relation: rootDep.relation,
+      url: rootDep.url,
+      explanation: rootDep.explanation,
+      children: level2Deps.map(l2Dep => {
+        // Get level-3 children for this level-2 dep
+        const level3Deps = AI_BUBBLE_BURST_DEPENDENCIES.filter(d => d.parentId === l2Dep.id);
+
+        return {
+          id: l2Dep.id,
+          label: l2Dep.question,
+          imageUrl: l2Dep.imageUrl,
+          probability: l2Dep.probability,
+          relation: l2Dep.relation,
+          url: l2Dep.url,
+          explanation: l2Dep.explanation,
+          children: level3Deps.map(l3Dep => ({
+            id: l3Dep.id,
+            label: l3Dep.question,
+            imageUrl: l3Dep.imageUrl,
+            probability: l3Dep.probability,
+            relation: l3Dep.relation,
+            url: l3Dep.url,
+            explanation: l3Dep.explanation,
+          })),
+        };
+      }),
+    };
+  });
 }
 
 // Multiple samples per topic for variety

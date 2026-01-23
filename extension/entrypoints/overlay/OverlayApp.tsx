@@ -1334,14 +1334,14 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
       padding: '12px 16px',
       overflow: 'hidden',
     }}>
-      {/* Scrollable Content Area - Fixed height to keep buttons in place */}
+      {/* Content Area - No scrolling */}
       <div style={{
         flex: 1,
-        overflowY: 'auto',
-        overflowX: 'hidden',
+        overflow: 'hidden',
         minHeight: 0,
       }}>
-      {/* Chain Dependency - Mini Graph */}
+      {/* Chain Dependency - Mini Graph (only show when we have nodes AND links) */}
+      {miniGraphData && miniGraphData.nodes.length >= 2 && miniGraphData.links.length > 0 && (
       <div>
         <div style={{
           fontSize: '9px',
@@ -1465,6 +1465,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
             )}
         </div>
       </div>
+      )}
 
       {/* User Selection Display */}
       {userSelection && showUserSelection && (

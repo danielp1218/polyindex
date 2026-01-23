@@ -437,14 +437,14 @@ export default function DecisionScreen({
         zIndex: 10,
         overflow: 'hidden',
       }}>
-        {/* Scrollable Content Area - Fixed height to keep buttons in place */}
+        {/* Content Area - No scrolling */}
         <div style={{
           flex: 1,
-          overflowY: 'auto',
-          overflowX: 'hidden',
+          overflow: 'hidden',
           minHeight: 0,
         }}>
-        {/* Chain Dependency - Mini Graph (matching VisualizationScreen style) */}
+        {/* Chain Dependency - Mini Graph (only show when we have nodes AND links) */}
+        {miniGraphData && miniGraphData.nodes.length >= 2 && miniGraphData.links.length > 0 && (
         <div>
           <div style={{
             fontSize: '9px',
@@ -482,9 +482,8 @@ export default function DecisionScreen({
                 }}
               />
               </div>
-            
+
             {/* Labels below graph */}
-            {miniGraphData && (
               <>
               <div style={{
                   display: 'flex',
@@ -534,9 +533,9 @@ export default function DecisionScreen({
                   </div>
                 )}
               </>
-            )}
           </div>
         </div>
+        )}
 
         {/* User Selection Display */}
         {userSelection && (showUserSelection ?? true) && (

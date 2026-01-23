@@ -125,6 +125,7 @@ function transformToGraphData(response: RelatedBetsResponse, profileImage?: stri
       marketId: bet.marketId,
       yesPercentage: bet.yesPercentage,
       noPercentage: bet.noPercentage,
+      imageUrl: bet.imageUrl, // Pass through the hardcoded image
     };
     nodes.push(node);
 

@@ -82,6 +82,81 @@ export function createRootGraph(options: {
   };
 }
 
+// Pre-populate graph with AI bubble children for impressive initial visualization
+export function prePopulateAiBubbleGraph(
+  graph: RelationGraphNode,
+  childrenData: Array<{
+    id: string;
+    label: string;
+    imageUrl: string;
+    probability: number;
+    relation: string;
+    url: string;
+    explanation: string;
+    children: Array<{
+      id: string;
+      label: string;
+      imageUrl: string;
+      probability: number;
+      relation: string;
+      url: string;
+      explanation: string;
+      children: Array<{
+        id: string;
+        label: string;
+        imageUrl: string;
+        probability: number;
+        relation: string;
+        url: string;
+        explanation: string;
+      }>;
+    }>;
+  }>
+): RelationGraphNode {
+  const children: RelationGraphNode[] = childrenData.map(child => ({
+    id: child.id,
+    label: child.label,
+    question: child.label,
+    imageUrl: child.imageUrl,
+    url: child.url,
+    explanation: child.explanation,
+    probability: child.probability,
+    weight: DEFAULT_WEIGHT,
+    decision: 'yes' as Decision,
+    relation: child.relation as RelationType,
+    children: child.children.map(grandchild => ({
+      id: grandchild.id,
+      label: grandchild.label,
+      question: grandchild.label,
+      imageUrl: grandchild.imageUrl,
+      url: grandchild.url,
+      explanation: grandchild.explanation,
+      probability: grandchild.probability,
+      weight: DEFAULT_WEIGHT,
+      decision: 'yes' as Decision,
+      relation: grandchild.relation as RelationType,
+      children: grandchild.children.map(greatGrandchild => ({
+        id: greatGrandchild.id,
+        label: greatGrandchild.label,
+        question: greatGrandchild.label,
+        imageUrl: greatGrandchild.imageUrl,
+        url: greatGrandchild.url,
+        explanation: greatGrandchild.explanation,
+        probability: greatGrandchild.probability,
+        weight: DEFAULT_WEIGHT,
+        decision: 'yes' as Decision,
+        relation: greatGrandchild.relation as RelationType,
+        children: [],
+      })),
+    })),
+  }));
+
+  return {
+    ...graph,
+    children,
+  };
+}
+
 function convertGraphData(
   graphData: GraphData,
   rootId: string,

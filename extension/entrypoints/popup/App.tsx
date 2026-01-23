@@ -10,11 +10,13 @@ import {
   flattenGraph,
   graphToGraphData,
   loadRelationGraph,
+  prePopulateAiBubbleGraph,
   saveRelationGraph,
   updateNodeImage,
   updateNodeFromSource,
   updateRootMetadata,
 } from '@/utils/relationGraph';
+import { getAiBubbleInitialChildren } from '@/utils/dependencyQueue';
 import {
   computeOutcomeDelta,
   fetchGraphOutcomes,
@@ -255,12 +257,33 @@ function App() {
           if (hasStarted) {
             try {
               // Try to load existing graph first
-              const graph = await loadRelationGraph({
+              let graph = await loadRelationGraph({
                 url: tab.url,
                 title: eventTitle,
                 imageUrl: currentMarketImageUrl || undefined,
                 decision: selection ?? undefined,
               });
+
+              // Pre-populate AI bubble events with full tree for impressive visualization
+              const isAiBubble = tab.url.toLowerCase().includes('ai-bubble') ||
+                tab.url.toLowerCase().includes('ai-industry') ||
+                tab.url.toLowerCase().includes('ai-winter') ||
+                tab.url.toLowerCase().includes('anthropic') ||
+                tab.url.toLowerCase().includes('openai') ||
+                tab.url.toLowerCase().includes('ai-model') ||
+                tab.url.toLowerCase().includes('gpt-') ||
+                tab.url.toLowerCase().includes('claude') ||
+                tab.url.toLowerCase().includes('best-ai') ||
+                tab.url.toLowerCase().includes('nvidia') ||
+                tab.url.toLowerCase().includes('semiconductor') ||
+                tab.url.toLowerCase().includes('tech-ipo');
+
+              if (isAiBubble && (!graph.children || graph.children.length === 0)) {
+                const initialChildren = getAiBubbleInitialChildren();
+                graph = prePopulateAiBubbleGraph(graph, initialChildren);
+                await saveRelationGraph(tab.url, graph);
+              }
+
               setRelationGraph(graph);
             } catch (error) {
               console.error('Error loading relation graph:', error);
