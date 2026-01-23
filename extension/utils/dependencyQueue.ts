@@ -1037,22 +1037,21 @@ const AI_BUBBLE_BURST_DEPENDENCIES: AiBubbleDependency[] = [
   { id: 'ai-bubble-5-4-1-1', parentId: 'ai-bubble-5-4-1', url: 'https://polymarket.com/event/google-antitrust-ai', question: 'Will Google face AI antitrust action?', relation: 'CONDITIONED_ON', explanation: 'Antitrust affects consolidation strategy', imageUrl: DEMO_IMAGES.snowMonth, probability: 0.38, yesPercentage: 38, noPercentage: 62 },
 ];
 
-// Get AI bubble dependencies for a given parent (null = root level)
+// Get AI bubble dependencies with variety - mix from different branches for more diverse graph
 function getAiBubbleDependencies(
   parentId: string | null,
   existingIds: Set<string>,
   count: number
 ): DependencyQueueItem[] {
-  // Filter dependencies by parentId
-  const matchingDeps = AI_BUBBLE_BURST_DEPENDENCIES.filter(
-    dep => dep.parentId === parentId && !existingIds.has(dep.id) && !existingIds.has(dep.url)
-  );
+  const selected: AiBubbleDependency[] = [];
+  const usedIds = new Set(existingIds);
 
-  // Take up to 'count' items
-  const selected = matchingDeps.slice(0, count);
+  // Helper to check if dep is available
+  const isAvailable = (dep: AiBubbleDependency) =>
+    !usedIds.has(dep.id) && !usedIds.has(dep.url);
 
-  // Convert to DependencyQueueItem format
-  return selected.map(dep => ({
+  // Helper to convert dep to queue item
+  const toQueueItem = (dep: AiBubbleDependency): DependencyQueueItem => ({
     id: dep.id,
     url: dep.url,
     weight: 0.75,
@@ -1076,7 +1075,75 @@ function getAiBubbleDependencies(
     probability: dep.probability,
     yesPercentage: dep.yesPercentage,
     noPercentage: dep.noPercentage,
-  }));
+  });
+
+  // Strategy: Mix items from different branches for variety
+  // 1. First, get 1-2 children of the current parent (maintains tree logic)
+  // 2. Then fill rest with items from OTHER branches (creates variety)
+
+  // Get children of current parent first (1-2 max for continuity)
+  if (parentId !== null) {
+    const childrenOfParent = AI_BUBBLE_BURST_DEPENDENCIES.filter(
+      dep => dep.parentId === parentId && isAvailable(dep)
+    );
+    const childrenToTake = Math.min(2, childrenOfParent.length, count);
+    for (let i = 0; i < childrenToTake; i++) {
+      selected.push(childrenOfParent[i]);
+      usedIds.add(childrenOfParent[i].id);
+      usedIds.add(childrenOfParent[i].url);
+    }
+  }
+
+  // Fill remaining slots with variety from different branches
+  // Group deps by their root branch (first segment of id like "ai-bubble-1", "ai-bubble-2", etc.)
+  const getRootBranch = (id: string) => {
+    const match = id.match(/^(ai-bubble-\d+)/);
+    return match ? match[1] : id;
+  };
+
+  // Get all available deps grouped by branch
+  const availableDeps = AI_BUBBLE_BURST_DEPENDENCIES.filter(isAvailable);
+  const branchGroups = new Map<string, AiBubbleDependency[]>();
+  for (const dep of availableDeps) {
+    const branch = getRootBranch(dep.id);
+    if (!branchGroups.has(branch)) {
+      branchGroups.set(branch, []);
+    }
+    branchGroups.get(branch)!.push(dep);
+  }
+
+  // Round-robin through branches to get variety
+  const branches = Array.from(branchGroups.keys());
+  let branchIndex = 0;
+  const branchIndices = new Map<string, number>();
+  branches.forEach(b => branchIndices.set(b, 0));
+
+  while (selected.length < count && branches.length > 0) {
+    const branch = branches[branchIndex % branches.length];
+    const branchDeps = branchGroups.get(branch)!;
+    const depIndex = branchIndices.get(branch)!;
+
+    if (depIndex < branchDeps.length) {
+      const dep = branchDeps[depIndex];
+      if (!usedIds.has(dep.id) && !usedIds.has(dep.url)) {
+        selected.push(dep);
+        usedIds.add(dep.id);
+        usedIds.add(dep.url);
+      }
+      branchIndices.set(branch, depIndex + 1);
+    }
+
+    branchIndex++;
+
+    // Remove exhausted branches
+    const activeBranches = branches.filter(b => {
+      const idx = branchIndices.get(b)!;
+      return idx < branchGroups.get(b)!.length;
+    });
+    if (activeBranches.length === 0) break;
+  }
+
+  return selected.map(toQueueItem);
 }
 
 // Export function to get initial children to pre-populate tree for AI bubble events
@@ -1638,7 +1705,7 @@ export async function processDependencyDecision({
 
     // Special handling for AI bubble burst events - skip API, use hardcoded data only
     if (isAiBubbleBurstEvent(eventUrl)) {
-      const MIN_QUEUE_SIZE = 5; // Show 5 dependencies at a time for AI bubble
+      const MIN_QUEUE_SIZE = 10; // Show 10 dependencies at a time for more variety
       if (nextQueue.length < MIN_QUEUE_SIZE) {
         const needed = MIN_QUEUE_SIZE - nextQueue.length;
         const allIds = new Set([...existingIds, ...existingUrls]);
