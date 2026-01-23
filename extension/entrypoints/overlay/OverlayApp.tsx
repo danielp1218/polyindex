@@ -1379,7 +1379,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
             />
           </div>
           
-          {miniGraphData ? (
+          {miniGraphData && (
             <>
               <div style={{
                 display: 'flex',
