@@ -927,6 +927,19 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
         .append('path')
         .attr('fill', color)
         .attr('d', 'M0,-5L10,0L0,5');
+
+      defs.append('marker')
+        .attr('id', `arrow-dim-${i}`)
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 28)
+        .attr('refY', 0)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('fill', color)
+        .attr('fill-opacity', 0.15)
+        .attr('d', 'M0,-5L10,0L0,5');
     });
 
     const colorToMarkerId = (color: string) => {
@@ -1019,8 +1032,38 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
       }
     });
 
+    const getConnectedNodeIds = (nodeId: string): Set<string> => {
+      const connected = new Set<string>([nodeId]);
+      links.forEach((l: any) => {
+        const sourceId = typeof l.source === 'object' ? l.source.id : l.source;
+        const targetId = typeof l.target === 'object' ? l.target.id : l.target;
+        if (sourceId === nodeId) connected.add(targetId);
+        if (targetId === nodeId) connected.add(sourceId);
+      });
+      return connected;
+    };
+
     node
       .on('mouseenter', (event: MouseEvent, d: any) => {
+        const connectedIds = getConnectedNodeIds(d.id);
+
+        node.transition().duration(200)
+          .style('opacity', (n: any) => connectedIds.has(n.id) ? 1 : 0.15);
+
+        link.transition().duration(200)
+          .attr('stroke-opacity', (l: any) => {
+            const sourceId = typeof l.source === 'object' ? l.source.id : l.source;
+            const targetId = typeof l.target === 'object' ? l.target.id : l.target;
+            return sourceId === d.id || targetId === d.id ? 0.8 : 0.08;
+          })
+          .attr('marker-end', (l: any) => {
+            const sourceId = typeof l.source === 'object' ? l.source.id : l.source;
+            const targetId = typeof l.target === 'object' ? l.target.id : l.target;
+            const isConnected = sourceId === d.id || targetId === d.id;
+            const markerId = colorToMarkerId(getRelationshipColor(l.relationship));
+            return isConnected ? `url(#${markerId})` : `url(#${markerId.replace('arrow-', 'arrow-dim-')})`;
+          });
+
         vizTooltip
           .style('opacity', '1')
           .style('left', `${event.offsetX + 15}px`)
@@ -1034,6 +1077,10 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
           .style('top', `${event.offsetY - 5}px`);
       })
       .on('mouseleave', () => {
+        node.transition().duration(200).style('opacity', 1);
+        link.transition().duration(200)
+          .attr('stroke-opacity', 0.6)
+          .attr('marker-end', (l: any) => `url(#${colorToMarkerId(getRelationshipColor(l.relationship))})`);
         vizTooltip.style('opacity', '0');
       });
 
