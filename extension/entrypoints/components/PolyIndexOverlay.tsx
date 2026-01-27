@@ -208,7 +208,7 @@ export default function PolyIndexOverlay({ eventSlug, userSelection }: PolyIndex
       {/* Footer */}
       <div className="mt-auto bg-[#0f172a] py-2 px-4 flex justify-between items-center border-t border-slate-700/30">
         <span className="text-[9px] text-slate-600 uppercase tracking-wider font-medium">PolyIndex</span>
-        <img src={chrome?.runtime?.getURL('logo.jpg') || '/logo.jpg'} alt="PolyIndex Logo" className="h-5 w-auto opacity-80" />
+        <img src={chrome?.runtime?.getURL('logo.png') || '/logo.png'} alt="PolyIndex Logo" className="h-5 w-auto opacity-80" />
       </div>
     </div>
   );

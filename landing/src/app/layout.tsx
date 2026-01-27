@@ -20,7 +20,7 @@ export const metadata = {
   title: "Pindex",
   description: "Build diversified portfolios with AI-powered index funds on Polymarket.",
   icons: {
-    icon: "/logo.jpg",
+    icon: "/logo.png",
   },
 };
 

@@ -1,4 +1,4 @@
-# Pindex <img src="/landing/public/logo.jpg" style="height: 38px; vertical-align: bottom; border-radius: 8px;">
+# Pindex <img src="/landing/public/logo-readme.png" style="height: 38px; vertical-align: bottom; border-radius: 8px;">
 
 > **Create your own agentic index funds inside Polymarket**
 
