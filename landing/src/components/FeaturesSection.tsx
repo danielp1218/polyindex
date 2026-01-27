@@ -198,6 +198,25 @@ export function FeaturesSection() {
          
         </motion.div>
 
+        {/* Video Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-4 md:mb-6"
+        >
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full rounded-2xl border border-white/10"
+          >
+            <source src="/pindexvid.mov" type="video/mp4" />
+          </video>
+        </motion.div>
+
         {/* Bento Box Grid Layout - 2 on top, 1 on bottom */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {/* Top Left: Container 1 - Extension UI Showcase with Radial Blur */}
@@ -667,11 +686,8 @@ export function FeaturesSection() {
           transition={{ duration: 1, delay: 0.5 }}
           className="mt-12 md:mt-24 text-center"
         >
-          <button
-            onClick={() => {
-              // TODO: Add waitlist functionality
-              console.log('Join waitlist clicked');
-            }}
+          <a
+            href="/waitlist"
             className="group relative inline-flex items-center gap-2 md:gap-3 px-6 md:px-8 py-3 md:py-4 rounded-full border border-white/10 text-white/60 text-xs md:text-sm tracking-widest uppercase font-semibold hover:text-white hover:border-white/30 transition-all duration-300 overflow-hidden"
             style={{
               background: 'linear-gradient(90deg, rgba(69, 90, 112, 0.1) 0%, rgba(47, 61, 77, 0.1) 50%, rgba(69, 90, 112, 0.1) 100%)'
@@ -702,7 +718,7 @@ export function FeaturesSection() {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </motion.svg>
-          </button>
+          </a>
         </motion.div>
       </div>
 

@@ -129,7 +129,8 @@ function App() {
 
             {/* Download Buttons - Centered on mobile, original on desktop */}
             <div className="flex flex-row justify-center gap-2 md:gap-3 px-4">
-              <button
+              <a
+                href="/waitlist"
                 className="pointer-events-auto flex items-center justify-center gap-2.5 px-4 md:px-5 py-2 md:py-2.5 rounded-full border border-white/10 text-white text-sm md:text-base font-medium hover:border-white/30 hover:brightness-125 hover:shadow-[0_8px_32px_rgba(70,100,140,0.3)] transition-all duration-200 shadow-[0_8px_32px_rgba(0,0,0,0.2)]"
                 style={{
                   background: 'linear-gradient(90deg, #455a70 0%, #2f3d4d 50%, #455a70 100%)'
@@ -144,9 +145,9 @@ function App() {
                   className="w-6 md:w-8 h-4 md:h-5 rounded-full"
                   priority
                 />
-                <span className="hidden sm:inline">Download for Chrome</span>
-                <span className="sm:hidden">Chrome</span>
-              </button>
+                <span className="hidden sm:inline">Join Waitlist</span>
+                <span className="sm:hidden">Waitlist</span>
+              </a>
               <a
                 href="https://github.com/danielp1218/pindex"
                 target="_blank"
