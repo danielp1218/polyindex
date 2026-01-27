@@ -11,6 +11,8 @@ interface FundScreenProps {
   globalsError?: string | null;
 }
 
+const DISPLAY_MULTIPLIER = 150;
+
 function FundScreen({ relationGraph, globalsResult, globalsLoading, globalsError }: FundScreenProps) {
   const allNodes = useMemo(() => flattenGraph(relationGraph), [relationGraph]);
   const childNodes = useMemo(() => allNodes.filter(n => n.id !== relationGraph.id), [allNodes, relationGraph.id]);
@@ -105,7 +107,7 @@ function FundScreen({ relationGraph, globalsResult, globalsLoading, globalsError
                   fontWeight: 600,
                   color: globalsResult.expectedValue >= 0 ? '#6ee7b7' : '#fca5a5',
                 }}>
-                  {formatCurrency(globalsResult.expectedValue)}
+                  {formatCurrency(globalsResult.expectedValue * DISPLAY_MULTIPLIER)}
                 </div>
               </div>
               <div>
@@ -117,7 +119,7 @@ function FundScreen({ relationGraph, globalsResult, globalsLoading, globalsError
                   fontWeight: 600,
                   color: globalsResult.roi >= 0 ? '#6ee7b7' : '#fca5a5',
                 }}>
-                  {formatPercent(globalsResult.roi)}
+                  {formatPercent(globalsResult.roi * DISPLAY_MULTIPLIER)}
                 </div>
               </div>
               <div>

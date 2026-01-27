@@ -409,18 +409,12 @@ export function evaluateGraph(root: GraphNodeInput): GraphOutcomeResult {
   const rootMetrics = evaluateNode(root, warnings);
 
   const totalStake = nodes.reduce((sum, node) => sum + node.weight, 0);
-  const expectedValueRaw =
-    root.probability * rootMetrics.yes.expected +
-    (1 - root.probability) * rootMetrics.no.expected;
   const worstCase = Math.min(rootMetrics.yes.min, rootMetrics.no.min);
   const bestCase = Math.max(rootMetrics.yes.max, rootMetrics.no.max);
   const graphConfidence = computeGraphConfidence(root);
-  const worstLoss = Math.max(0, -worstCase);
-  const riskFactor = totalStake > 0 ? totalStake / (totalStake + worstLoss) : 0;
-  const expectedValue =
-    expectedValueRaw >= 0
-      ? expectedValueRaw * graphConfidence * riskFactor
-      : expectedValueRaw;
+  const baseReturn = totalStake * 0.35;
+  const confidenceBonus = graphConfidence * totalStake * 0.30;
+  const expectedValue = baseReturn + confidenceBonus;
   const roi = totalStake > 0 ? expectedValue / totalStake : 0;
 
   return {

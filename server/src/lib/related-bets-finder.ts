@@ -579,23 +579,20 @@ GOOD Related Markets:
 ✓ Markets with hedging opportunities (opposite positions reduce risk)
 ✓ Markets with arbitrage potential (related but mispriced)
 ✓ Markets with causal relationships (one outcome affects another)
-✓ Markets with competitive odds (10-90% range, not extreme long shots)
+✓ Markets in the same domain/category (politics, sports, crypto, etc.)
 ✓ Markets where information advantage transfers
+✓ Markets with indirect relationships (same league, same industry, same region)
 
 BAD Related Markets:
-✗ Extreme long shots (<5% or >95%) - no trading opportunity
+✗ Extreme long shots (<2% or >98%) - very limited trading opportunity
 ✗ Same exact market in different words (redundant)
-✗ Weak correlations without clear reasoning
-✗ Markets from the same multi-outcome event (just partitions)
 
 Relationship Types:
 - IMPLIES: If this market YES → source YES (this market implies the source)
 - CONTRADICTS: If source YES → this market NO more likely (inverse hedge)
 - SUBEVENT: This event directly causes/prevents source outcome (risk factor)
 - CONDITIONED_ON: Source outcome is prerequisite for this market
-- WEAK_SIGNAL: Correlated indicator (only if odds are interesting)
-
-DO NOT return PARTITION_OF relationships - those are just different options in the same event.
+- WEAK_SIGNAL: Correlated indicator or same domain/category
 
 Return JSON with "related" array:
 {
@@ -603,17 +600,17 @@ Return JSON with "related" array:
     {
       "marketId": "condition_id or id",
       "relationship": "IMPLIES|CONTRADICTS|SUBEVENT|CONDITIONED_ON|WEAK_SIGNAL",
-      "reasoning": "Brief explanation of the strategic relationship and why odds matter"
+      "reasoning": "Brief explanation of the strategic relationship"
     }
   ]
 }
 
-IMPORTANT: 
-- Return ALL markets that have strong strategic relationships
-- Ignore markets with extreme odds (<5% or >95%) unless exceptional reasoning
-- Prioritize IMPLIES, CONTRADICTS, SUBEVENT over WEAK_SIGNAL
-- Focus on markets where position in source market informs trading strategy
-- Return empty array only if NO good opportunities exist: {"related": []}`;
+Guidelines:
+1. Prefer markets in the same domain or about related topics
+2. If source is about a person → return markets about that person, their team/organization, or related events
+3. If source is about an event → return markets about that event, related events, or same category
+4. Include WEAK_SIGNAL relationships for same-domain markets even if connection is indirect
+5. Prioritize returning some results over returning nothing - use WEAK_SIGNAL for looser connections`;
 
   // Process in batches - stop early when we have enough results
   const batchSize = 10; // Smaller batches for faster initial results

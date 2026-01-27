@@ -397,7 +397,7 @@ export function graphToGraphData(root: RelationGraphNode): GraphData {
     }
 
     if (children.length >= 2) {
-      addLink(children[0].id, children[1].id, children[0].relation);
+      addLink(children[0].id, children[1].id, 'CONTRADICTS');
     }
   };
 
@@ -405,10 +405,10 @@ export function graphToGraphData(root: RelationGraphNode): GraphData {
 
   const nonRoot = allNodes.filter(n => n.id !== root.id);
   if (nonRoot.length >= 3) {
-    addLink(nonRoot[0].id, nonRoot[2].id, nonRoot[0].relation);
+    addLink(nonRoot[0].id, nonRoot[2].id, 'SUBEVENT');
   }
   if (nonRoot.length >= 5) {
-    addLink(nonRoot[1].id, nonRoot[4].id, nonRoot[1].relation);
+    addLink(nonRoot[1].id, nonRoot[4].id, 'CONDITIONED_ON');
   }
 
   return { nodes, links };

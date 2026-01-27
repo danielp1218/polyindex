@@ -135,8 +135,9 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
       decision: rootDecision,
       relation: '',
       question: eventTitle,
+      imageUrl: eventImageUrl || profileImage || undefined,
     };
-  }, [currentUrl, hasVisitedRoot, rootId, rootDecision, eventTitle]);
+  }, [currentUrl, hasVisitedRoot, rootId, rootDecision, eventTitle, eventImageUrl, profileImage]);
   const displayItem = queuedItem ?? rootFallbackItem;
   const showUserSelection = Boolean(rootFallbackItem && !queuedItem);
   const decisionTitle = displayItem?.question ?? eventTitle;
@@ -191,7 +192,7 @@ export function OverlayApp({ isVisible, onClose, profileImage: initialProfileIma
     const sourceNode = displayItem.parentId
       ? findNodeById(relationGraph, displayItem.parentId) ?? relationGraph
       : relationGraph;
-    const sourceLabel = displayItem.sourceQuestion ?? sourceNode.label ?? sourceNode.id;
+    const sourceLabel = sourceNode.label ?? sourceNode.id;
 
     return {
       nodes: [
