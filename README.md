@@ -4,7 +4,11 @@
 
 Agentic dependency analysis that reveals correlations between prediction markets. Analyze, decide, optimize—systematically.
 
-https://github.com/user-attachments/assets/b8906aea-124f-4c83-a3a5-1d60837a4a47
+
+
+https://github.com/user-attachments/assets/cfcc4938-d646-4809-9529-13b5e33e0a11
+
+
 
 ---
 
